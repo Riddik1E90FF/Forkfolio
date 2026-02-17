@@ -1,0 +1,188 @@
+/* Reset & global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header styles */
+header {
+    background-color: #1e1e1e;
+    color: #fff;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+header nav a:hover {
+    color: #ff6b6b;
+}
+
+/* Main container */
+main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Section headings */
+main h1, main h2 {
+    margin-bottom: 20px;
+    color: #1e1e1e;
+    border-bottom: 2px solid #ff6b6b;
+    padding-bottom: 10px;
+}
+
+/* Paragraphs and lists */
+main p, main li {
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+main ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+/* Joke box styling */
+.characterBox {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #fafafa;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.characterBox:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+/* Forms */
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+form input[type="text"],
+form input[type="tel"],
+form input[type="email"],
+form input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+
+form input[type="text"]:focus,
+form input[type="tel"]:focus,
+form input[type="email"]:focus,
+form input[type="number"]:focus {
+    border-color: #ff6b6b;
+    outline: none;
+}
+
+form input[type="submit"], form button {
+    background-color: #ff6b6b;
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover, form button:hover {
+    background-color: #ff3b3b;
+}
+
+/* Success & error messages */
+.error {
+    color: #ff3b3b;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    border: 2px solid green;
+    border-radius: 5px;
+    background-color: #e0ffe0;
+}
+
+/* Footer */
+footer {
+    background-color: #1e1e1e;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #ff6b6b;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Images */
+.audio_image {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header nav {
+        margin-top: 10px;
+    }
+
+    main {
+        margin: 20px;
+        padding: 15px;
+    }
+}
