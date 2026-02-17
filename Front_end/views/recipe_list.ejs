@@ -8,10 +8,12 @@
 </head>
 <body>
     <%- include('partials/header') %>
-    <main>
+    <section>
         <h1>Recipe List</h1>
-        <p>This is the recipe list page.</p>
-    </main>
+        <% recipes.forEach(recipe => { %>
+            <div class="recipe">
+            </div>
+        <% }) %>
     <%- include('partials/footer') %>
 </body>
 </html>

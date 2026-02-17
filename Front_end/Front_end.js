@@ -18,6 +18,7 @@ app.get('/recipe', (req, res) => {
   res.render('recipe');
 });
 
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
