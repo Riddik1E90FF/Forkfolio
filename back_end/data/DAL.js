@@ -12,8 +12,7 @@ let dal = {
             await client.connect();
             console.log("Connected to MongoDB");
             let db = client.db("recipeApp");
-            let coll = db.collection("recipes");
-            console.log("Database: recipeApp, Collection: recipes");
+            let coll = db.collection("recipies");
             recipes = await coll.find().toArray();
             console.log("Found " + recipes.length + " recipes");
             console.log("Recipes: ", recipes);
