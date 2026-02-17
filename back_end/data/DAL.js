@@ -10,16 +10,19 @@ let dal = {
 
         try{
             await client.connect();
+            console.log("Connected to MongoDB");
             let db = client.db("recipeApp");
             let coll = db.collection("recipes");
+            console.log("Database: recipeApp, Collection: recipes");
             recipes = await coll.find().toArray();
-            console.log(db)
-            console.log(coll)
+            console.log("Found " + recipes.length + " recipes");
+            console.log("Recipes: ", recipes);
+        }catch(error){
+            console.error("Error fetching recipes: ", error);
         }finally{
             await client.close();
         }
 
-        console.log("Recipes: ", recipes);
         return recipes;
     }
 };
