@@ -11,7 +11,7 @@ let dal = {
         try{
             await client.connect();
             let db = client.db("recipeApp");
-            let coll = db.collection("recipes");
+            let coll = db.collection("recipies");
             recipes = await coll.find().toArray();
             console.log(db)
             console.log(coll)
