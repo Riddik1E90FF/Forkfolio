@@ -17,29 +17,27 @@ header {
     background-color: #1e1e1e;
     color: #fff;
     padding: 20px 40px;
+}
+
+header nav ul {
+    list-style: none;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: 30px;
 }
 
-header .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-}
-
-header nav a {
+header nav ul li a {
     color: #fff;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s;
 }
 
-header nav a:hover {
+header nav ul li a:hover {
     color: #ff6b6b;
 }
 
 /* Main container */
-main {
+main, section {
     max-width: 900px;
     margin: 40px auto;
     padding: 20px;
@@ -48,8 +46,8 @@ main {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Section headings */
-main h1, main h2 {
+/* Headings */
+h1, h2 {
     margin-bottom: 20px;
     color: #1e1e1e;
     border-bottom: 2px solid #ff6b6b;
@@ -57,18 +55,18 @@ main h1, main h2 {
 }
 
 /* Paragraphs and lists */
-main p, main li {
+p, li {
     margin-bottom: 15px;
     font-size: 1rem;
 }
 
-main ul {
+ul {
     list-style-type: disc;
     padding-left: 20px;
 }
 
-/* Joke box styling */
-.characterBox {
+/* Recipe card styling */
+.recipe {
     border: 1px solid #ccc;
     padding: 15px;
     margin-bottom: 20px;
@@ -77,9 +75,19 @@ main ul {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.characterBox:hover {
+.recipe:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.recipe h2 {
+    border-bottom: 1px solid #ff6b6b;
+    padding-bottom: 8px;
+}
+
+.recipe a, .recipe button {
+    display: inline-block;
+    margin-right: 10px;
 }
 
 /* Forms */
@@ -162,26 +170,3 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/* Images */
-.audio_image {
-    width: 300px;
-    height: auto;
-    border-radius: 8px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    header nav {
-        margin-top: 10px;
-    }
-
-    main {
-        margin: 20px;
-        padding: 15px;
-    }
-}
