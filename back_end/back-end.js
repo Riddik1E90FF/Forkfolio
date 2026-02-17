@@ -6,8 +6,9 @@ const router = express.Router();
 const {dal} = require("./data/DAL.js");
 const PORT = 4000;
 
-router.get("/", (req, res) => {
-    return dal.fetchAllRecipes()
+router.get("/recipes", async (req, res) => {
+    const recipes = await dal.fetchAllRecipes();
+    return res.json(recipes);
 });
 
 router.post("/", (req, res) => {
