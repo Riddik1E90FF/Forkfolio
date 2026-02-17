@@ -30,7 +30,6 @@ header .logo {
 header nav a {
     color: #fff;
     text-decoration: none;
-    margin-left: 20px;
     font-weight: 500;
     transition: color 0.3s;
 }
