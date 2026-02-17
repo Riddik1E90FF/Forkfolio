@@ -1,12 +1,23 @@
 // Imports
 const express = require("express");
 const router = express.Router();
+const app = express()
 
 // Server variables
 const {dal} = require("./data/DAL.js");
 const PORT = 4000;
 
-router.get("/recipes", async (req, res) => {
+//Middleware 
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
+app.use("/", router);
+
+app.listen(PORT, () => {
+    console.log(`Express running on port ${PORT}`);
+    console.log(`http://localhost:${PORT}/`);
+});
+
+router.get("/", async (req, res) => {
     const recipes = await dal.fetchAllRecipes();
     return res.json(recipes);
 });
@@ -46,3 +57,4 @@ router.put("/", (req, res) => {
 
     return response;
 });
+

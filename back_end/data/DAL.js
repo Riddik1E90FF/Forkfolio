@@ -12,11 +12,14 @@ let dal = {
             await client.connect();
             let db = client.db("recipeApp");
             let coll = db.collection("recipes");
-            recipes = await coll.find({}).toArray();
+            recipes = await coll.find().toArray();
+            console.log(db)
+            console.log(coll)
         }finally{
             await client.close();
         }
 
+        console.log("Recipes: ", recipes);
         return recipes;
     }
 };
