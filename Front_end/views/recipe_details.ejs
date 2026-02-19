@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= recipe.name %> - Recipe Details</title>
+    <link rel="stylesheet" href="/css/recipe.css">
+</head>
+<body>
+    <div class="container">
+        <h1><%= recipe.name %></h1>
+        <p><strong>Preparation Time:</strong> <%= recipe.prepTime %> minutes</p>
+        <p><strong>Cooking Time:</strong> <%= recipe.cookTime %> minutes</p>
+        <h2>Ingredients</h2>
+        <ul>
+            <% recipe.ingredients.forEach(ingredient => { %>
+                <li><%= ingredient %></li>
+            <% }) %>
+        </ul>
+        <h2>Instructions</h2>
+        <ol>
+            <% recipe.instructions.forEach(instruction => { %>
+                <li><%= instruction %></li>
+            <% }) %>
+        </ol>
+    </div>
+</html>
