@@ -22,6 +22,18 @@ app.get('/api/recipes', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch recipes' });
   }});
 
+app.get('/api/recipes/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await fetch(`${API_BASE}/recipes/${id}`);
+    const recipe = await response.json();
+    res.render('recipe_details', { recipe });
+  } catch (error) {
+    console.error('Error fetching recipe details:', error);
+    res.status(500).json({ error: 'Failed to fetch recipe details' });
+  }
+});
+
 app.get('/', (req, res) => {
   res.render('home');
 });

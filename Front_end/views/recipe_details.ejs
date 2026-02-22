@@ -7,21 +7,22 @@
     <link rel="stylesheet" href="/css/recipe.css">
 </head>
 <body>
-    <div class="container">
-        <h1><%= recipe.name %></h1>
-        <p><strong>Preparation Time:</strong> <%= recipe.prepTime %> minutes</p>
-        <p><strong>Cooking Time:</strong> <%= recipe.cookTime %> minutes</p>
-        <h2>Ingredients</h2>
-        <ul>
-            <% recipe.ingredients.forEach(ingredient => { %>
-                <li><%= ingredient %></li>
-            <% }) %>
-        </ul>
-        <h2>Instructions</h2>
-        <ol>
-            <% recipe.instructions.forEach(instruction => { %>
-                <li><%= instruction %></li>
-            <% }) %>
-        </ol>
-    </div>
+    <h1><%= recipe.name %></h1>
+    <p><%= recipe.description %></p>
+    <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
+    <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
+    <h2>Ingredients</h2>
+    <ul>
+        <% recipe.ingredients.forEach(ingredient => { %>
+            <li><%= ingredient %></li>
+        <% }) %>
+    </ul>
+    <h2>Instructions</h2>
+    <ol>
+        <% recipe.directions.forEach(direction => { %>
+            <li><%= direction %></li>
+        <% }) %>
+    </ol>
+    <a href="/recipe_list">Back to Recipe List</a>
+</body>
 </html>

@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://zachmajernik_db_user:div08GzII37OFhg9@recipeapp-dev.g79enei.mongodb.net/?appName=recipeapp-dev";
 
 let dal = {
@@ -23,6 +23,23 @@ let dal = {
         }
 
         return recipes;
+    },
+        fetchRecipeById: async function(id){
+        console.log("Fetching recipe with id:", id); // add this
+        const client = new MongoClient(uri);
+        let recipe = null;
+        try{
+            await client.connect();
+            let db = client.db("recipeApp");
+            let coll = db.collection("recipes");
+            recipe = await coll.findOne({ _id: new ObjectId(id) });
+            console.log("Result:", recipe); // add this
+        }catch(error){
+            console.error("Error fetching recipe: ", error);
+        }finally{
+            await client.close();
+        }
+        return recipe;
     }
 };
 

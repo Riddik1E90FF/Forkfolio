@@ -58,3 +58,8 @@ router.put("/", (req, res) => {
     return response;
 });
 
+
+router.get("/recipes/:id", async (req, res) => {
+    const recipe = await dal.fetchRecipeById(req.params.id);
+    return res.json(recipe);
+});

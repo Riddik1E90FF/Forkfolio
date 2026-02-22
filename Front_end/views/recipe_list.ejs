@@ -17,8 +17,8 @@
                 <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings |
                 <%= recipe.difficulty %></p>
                 <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
-                <a href="/recipes/<%= recipe.id %>">View Details</a>
-                <button onclick="deleteRecipe('<%= recipe.id %>')">Delete</button>
+                <a href="/api/recipes/<%= recipe._id %>">View Details</a>
+                <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
             </div>
         <% }) %>
     <%- include('partials/footer') %>
@@ -27,7 +27,7 @@
         async function deleteRecipe(id) {
             if (confirm('Are you sure you want to delete this recipe?')) {
                 try {
-                    const response = await fetch(`/recipes/${id}`, { method: 'DELETE' });
+                    const response = await fetch(`/api/recipes/${id}`, { method: 'DELETE' });
                     if (response.ok) {
                         location.reload();
                     } else {
