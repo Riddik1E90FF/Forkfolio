@@ -33,7 +33,7 @@
     <h2>Ingredients</h2>
     <ul>
         <% recipe.ingredients.forEach(ingredient => { %>
-            <li><%= ingredient %></li>
+            <li><%= ingredient.item %>, <%= ingredient.amount %></li>
         <% }) %>
     </ul>
     <h2>Instructions</h2>
