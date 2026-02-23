@@ -8,7 +8,26 @@
 </head>
 <body>
     <h1><%= recipe.name %></h1>
+    <h3>Rating: 
+        <%= (recipe.ratings && recipe.ratings.length > 0)
+            ? ((recipe.ratings.reduce((a, b) => a + b, 0) / recipe.ratings.length).toFixed(1) + ' / 5')
+            : "No ratings yet" %>
+        <% if (recipe.ratings && recipe.ratings.length > 0) { %>
+            <span style="font-size:0.8em; color:#666;">(<%= recipe.ratings.length %>)</span>
+        <% } %>
+    </h3>
     <p><%= recipe.description %></p>
+    <% function formatTimestamp(ts) {
+        const d = new Date(ts);
+        const h24 = d.getHours();
+        const hours = ((h24 % 12) || 12);
+        const ampm = h24 >= 12 ? 'pm' : 'am';
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${hours}:${minutes}${ampm} ${month}-${day}-${year}`;
+    } %>
     <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
     <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
     <h2>Ingredients</h2>
@@ -24,5 +43,46 @@
         <% }) %>
     </ol>
     <a href="/recipe_list">Back to Recipe List</a>
+    <div id="Comments">
+        <h2>Comments</h2>
+        <h3>Add a Comment</h3>
+        <form action="/recipes/<%= recipe._id %>/comments" method="POST">
+            <textarea name="comment" rows="4" cols="50" required></textarea><br>
+            Rating: <input type="number" id="rating-input" name="rating" min="0" max="5" required> / 5<br>
+            <button type="submit">Submit Comment</button>
+        </form>
+        <% const comments = recipe.comments || []; %>
+        <% if (comments.length > 0) { %>
+            <% comments.forEach(comment => { %>
+                <div class="comment">
+                    <div class="comment-user"><strong><%= comment.username %></strong></div>
+                    <div class="comment-rating">Rating: <%= comment.rating %>/5</div>
+                    <div class="comment-text"><%= comment.text %></div>
+                    <div class="comment-time" style="font-size:0.9em; color:#555;">
+                        <%= formatTimestamp(comment.timestamp) %>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>No comments yet. Be the first to comment!</p>
+        <% } %>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('rating-input');
+            if (input) {
+                input.addEventListener('blur', () => {
+                    let v = parseFloat(input.value);
+                    if (isNaN(v)) {
+                        input.value = 0;
+                        return;
+                    }
+                    if (v < 0) input.value = 0;
+                    else if (v > 5) input.value = 5;
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -40,6 +40,32 @@ let dal = {
             await client.close();
         }
         return recipe;
+    },
+    addCommentToRecipe: async function(id, comment) {
+        // comment is expected to be an object with at least { text, username, userId, timestamp, rating }
+        console.log("Adding comment to recipe", id, comment);
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("recipes");
+            // Push both the comment and the rating (as a number) to their respective arrays
+            await coll.updateOne(
+                { _id: new ObjectId(id) },
+                {
+                    $push: {
+                        comments: comment,
+                        ratings: Number(comment.rating)
+                    }
+                }
+            );
+            console.log("Comment and rating pushed");
+        } catch (error) {
+            console.error("Error adding comment: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
     }
 };
 

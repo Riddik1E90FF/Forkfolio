@@ -34,6 +34,27 @@ app.get('/api/recipes/:id', async (req, res) => {
   }
 });
 
+app.post('/recipes/:id/comments', async (req, res) => {
+  const { id } = req.params;
+  const { comment, rating } = req.body;
+  try {
+    const response = await fetch(`${API_BASE}/recipes/${id}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ comment, rating }),
+    });
+    if (response.ok) {
+      return res.redirect(`/api/recipes/${id}`);
+    } else {
+      console.error('Error adding comment:', response.statusText);
+      return res.status(500).send('Failed to add comment');
+    }
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ error: 'Failed to add comment' });
+  }
+});
+
 app.get('/', (req, res) => {
   res.render('home');
 });

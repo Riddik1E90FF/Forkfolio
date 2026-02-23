@@ -63,3 +63,30 @@ router.get("/recipes/:id", async (req, res) => {
     const recipe = await dal.fetchRecipeById(req.params.id);
     return res.json(recipe);
 });
+
+// accept a comment from the front end and forward it to the DAL
+router.post("/recipes/:id/comments", async (req, res) => {
+    const { id } = req.params;
+    const { comment } = req.body;
+    const username = req.body.username || 'n/a';
+    const rating = req.body.rating;
+    const userId = req.body.userId || 'n/a';
+    const timestamp = new Date().toISOString();
+
+    const commentObj = {
+        "text": comment,
+        "rating": rating,
+        "username": username,
+        "userId": userId,
+        "timestamp": timestamp,
+    };
+
+    try {
+        await dal.addCommentToRecipe(id, commentObj);
+        return res.json({ code: 200, message: "Comment added" });
+    } catch (error) {
+        console.error("Error adding comment: ", error);
+        res.status(500).json({ error: "Failed to add comment" });
+    }
+});
+

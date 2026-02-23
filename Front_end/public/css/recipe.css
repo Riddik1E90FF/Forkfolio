@@ -97,10 +97,18 @@ form label {
     font-weight: 600;
 }
 
+/* small width for rating inputs (only a few characters) */
+form input[name="rating"],
+form input.rating {
+    width: 50px; /* roughly enough for one digit */
+    padding: 5px;
+    display: inline-block;
+}
+
 form input[type="text"],
 form input[type="tel"],
 form input[type="email"],
-form input[type="number"] {
+form input[type="number"]:not([name="rating"]) {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -170,3 +178,9 @@ footer a:hover {
     text-decoration: underline;
 }
 
+.comment {
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
