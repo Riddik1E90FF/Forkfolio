@@ -25,7 +25,7 @@ let dal = {
         return recipes;
     },
         fetchRecipeById: async function(id){
-        console.log("Fetching recipe with id:", id); // add this
+        console.log("Fetching recipe with id:", id); 
         const client = new MongoClient(uri);
         let recipe = null;
         try{
@@ -33,7 +33,7 @@ let dal = {
             let db = client.db("recipeApp");
             let coll = db.collection("recipes");
             recipe = await coll.findOne({ _id: new ObjectId(id) });
-            console.log("Result:", recipe); // add this
+            console.log("Result:", recipe); 
         }catch(error){
             console.error("Error fetching recipe: ", error);
         }finally{
