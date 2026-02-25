@@ -76,7 +76,7 @@ app.post('/login', async (req, res) => {
         const data = await response.json();
 
         if (response.ok) {
-            res.redirect('/home'); 
+            res.redirect('/'); 
         } else {
             res.render('login', { error: data.error, message: null });
         }
