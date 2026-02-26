@@ -1,44 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe List</title>
-    <link rel="stylesheet" href="/css/recipe.css">
-</head>
-<body>
-    <%- include('partials/header') %>
-    <section>
-        <h1>Recipe List</h1>
-        <% recipes.forEach(recipe => { %>
-            <div class="recipe">
-                <h2><%= recipe.name %></h2>
-                <p><%= recipe.description %></p>
-                <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings |
-                <%= recipe.difficulty %></p>
-                <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
-                <a href="/api/recipes/<%= recipe._id %>">View Details</a>
-                <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
-            </div>
-        <% }) %>
-    <%- include('partials/footer') %>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Recipe List</title>
+        <link rel="stylesheet" href="/css/recipe.css">
+    </head>
+    <body>
+        <%- include('partials/header') %>
+        <section class="search-bar">
+            <form action="/search" method="GET" role="search">
+                    <input type="search" id="site-search" name="q" placeholder="Search Catalogue for Recipes..." required>
+                    <button>Search</button>
+            </form>
+        </section>
+        <section>
+            <h1>Recipe List</h1>
+            <% recipes.forEach(recipe => { %>
+                <div class="recipe">
+                    <h2><%= recipe.name %></h2>
+                    <p><%= recipe.description %></p>
+                    <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings |
+                    <%= recipe.difficulty %></p>
+                    <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
+                    <a href="/api/recipes/<%= recipe._id %>">View Details</a>
+                    <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
+                </div>
+            <% }) %>
 
-    <script>
-        async function deleteRecipe(id) {
-            if (confirm('Are you sure you want to delete this recipe?')) {
-                try {
-                    const response = await fetch(`/api/recipes/${id}`, { method: 'DELETE' });
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('Failed to delete recipe');
+        </section>
+
+        <%- include('partials/footer') %>
+
+        <script>
+            async function deleteRecipe(id) {
+                if (confirm('Are you sure you want to delete this recipe?')) {
+                    try {
+                        const response = await fetch(`/api/recipes/${id}`, { method: 'DELETE' });
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Failed to delete recipe');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting recipe:', error);
+                        alert('An error occurred while deleting the recipe');
                     }
-                } catch (error) {
-                    console.error('Error deleting recipe:', error);
-                    alert('An error occurred while deleting the recipe');
                 }
             }
-        }
-    </script>
-</body>
+        </script>
+    </body>
 </html>

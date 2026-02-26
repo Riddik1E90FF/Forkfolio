@@ -128,3 +128,13 @@ app.put('/:id', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+app.get("/search", async (req, res) => {
+    const { q } = req.query;
+    if (!q || !q.trim()) {
+      return res.redirect('/recipe_list');
+    }
+    const response = await fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`);
+    const results = await response.json();
+    res.render('recipe_list', { recipes: results });
+});

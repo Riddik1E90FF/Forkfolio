@@ -97,6 +97,13 @@ form label {
     font-weight: 600;
 }
 
+/* Search Bar */
+#site-search {
+    width: 70%;
+    border-radius: 15px;
+    height: 40px;
+}
+
 /* small width for rating inputs (only a few characters) */
 form input[name="rating"],
 form input.rating {

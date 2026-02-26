@@ -66,6 +66,31 @@ let dal = {
         } finally {
             await client.close();
         }
+    },
+    searchRecipes: async function(query) {
+        console.log("Searching recipes with query:", query);
+        const client = new MongoClient(uri);
+        let results = [];
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("recipes");
+            // Use a case-insensitive regex search on the name and ingredients fields
+            results = await coll.find({
+                $or: [
+                    { name: { $regex: query, $options: 'i' } },
+                    { ingredients: { $regex: query, $options: 'i' } }
+                ]
+            }).toArray();
+            console.log("Search results:", results);
+        }
+        catch (error) {
+            console.error("Error searching recipes: ", error);
+        }
+        finally {
+            await client.close();
+        }
+        return results;
     }
 };
 

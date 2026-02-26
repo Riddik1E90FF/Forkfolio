@@ -58,6 +58,16 @@ router.put("/", (req, res) => {
     return response;
 });
 
+router.get("/search", async (req, res) => {
+    const { q } = req.query;
+    if (!q) {
+        return res.status(400).json({ error: "Search query is required" });
+    }
+
+    const results = await dal.searchRecipes(q);
+    return res.json(results);
+});
+
 
 router.get("/recipes/:id", async (req, res) => {
     const recipe = await dal.fetchRecipeById(req.params.id);
