@@ -1,0 +1,31 @@
+------ Supabase Password Auth ------
+
+DB: Recipie App
+
+Team Name: The Beavers
+
+Supabase DB Password: 31fSKkrIEHZmOKFG
+
+Project URL: https://jxvpughnfytxfwcvsngk.supabase.co
+
+Anon Public Key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dnB1Z2huZnl0eGZ3Y3ZzbmdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTgzOTEsImV4cCI6MjA4NzUzNDM5MX0.nwviGkov8vWGdAhEj6RM0lpgRPEPLSf3rE2_C0FnDG8
+
+------ Data Schema ------
+
+Table Name: Users
+
+Primary Key: id
+
+Columns:
+
+id (UUID / int) – primary key
+
+email (text) – unique user email
+
+password_hash (text) – hashed password
+
+created_at (timestamp) – account creation date
+
+Constraints / Indexes:
+
+email unique
