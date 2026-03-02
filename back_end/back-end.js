@@ -38,10 +38,16 @@ app.post("/login", async (req, res) => {
         return res.status(400).json({ error: error.message });
     }
 
-    return res.json({ message: "Login successful!" });
+    return res.json({ 
+        message: "Login successful!",
+        user: data.user,
+        token: data.session.access_token
+    });
 });
 
 app.post("/logout", async (req, res) => {
+    res.clearCookie('token');
+    res.clearCookie('user_email');
     res.redirect("/login");
 });
 
@@ -149,5 +155,17 @@ router.post("/recipes/:id/comments", async (req, res) => {
     } catch (error) {
         console.error("Error adding comment: ", error);
         res.status(500).json({ error: "Failed to add comment" });
+    }
+});
+
+router.delete("/recipes/:id/comments/:commentIndex", async (req, res) => {
+    const { id, commentIndex } = req.params;
+    const { userId } = req.body;
+    try {
+        await dal.deleteCommentFromRecipe(id, parseInt(commentIndex), userId);
+        return res.json({ code: 200, message: "Comment deleted" });
+    } catch (error) {
+        console.error("Error deleting comment: ", error);
+        res.status(500).json({ error: "Failed to delete comment" });
     }
 });

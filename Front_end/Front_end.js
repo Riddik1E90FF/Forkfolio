@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieparser = require('cookie-parser');
 
 const app = express();
 const port = 7000;
@@ -6,6 +7,7 @@ const port = 7000;
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
+app.use(cookieparser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +29,10 @@ app.get('/api/recipes/:id', async (req, res) => {
   try {
     const response = await fetch(`${API_BASE}/recipes/${id}`);
     const recipe = await response.json();
-    res.render('recipe_details', { recipe });
+    const useremail = req.cookies.user_email || null;
+    const userId = req.cookies.user_id || null;
+    const username = useremail ? useremail.split('@')[0] : 'Guest';
+    res.render('recipe_details', { recipe, useremail, userid: req.cookies.user_id || null, username });
   } catch (error) {
     console.error('Error fetching recipe details:', error);
     res.status(500).json({ error: 'Failed to fetch recipe details' });
@@ -45,11 +50,13 @@ app.get('/signup', (req, res) => {
 app.post('/recipes/:id/comments', async (req, res) => {
   const { id } = req.params;
   const { comment, rating } = req.body;
+  const userId = req.cookies.user_id || null;
+  const username = req.cookies.user_email ? req.cookies.user_email.split('@')[0] : 'Guest';
   try {
     const response = await fetch(`${API_BASE}/recipes/${id}/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comment, rating }),
+      body: JSON.stringify({ comment, rating, username, userId, timestamp: new Date().toISOString() }),
     });
     if (response.ok) {
       return res.redirect(`/api/recipes/${id}`);
@@ -60,6 +67,24 @@ app.post('/recipes/:id/comments', async (req, res) => {
   } catch (error) {
     console.error('Error adding comment:', error);
     res.status(500).json({ error: 'Failed to add comment' });
+  }
+});
+
+app.delete('/recipes/:id/comments/:commentIdex', async (req, res) => {
+  const { id, commentIdex } = req.params;
+  const userId = req.cookies.user_id || null;
+  try {
+    const response = await fetch(`${API_BASE}/recipes/${id}/comments/${commentIdex}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
+    });
+
+      res.json({ message: 'Comment deleted'});
+
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ error: 'Failed to delete comment' });
   }
 });
 
@@ -76,7 +101,10 @@ app.post('/login', async (req, res) => {
         const data = await response.json();
 
         if (response.ok) {
-            res.redirect('/'); 
+            res.cookie('token', data.token, {httpOnly: true});
+            res.cookie('user_email', data.user.email);
+            res.cookie('user_id', data.user.id);
+            res.redirect('/');
         } else {
             res.render('login', { error: data.error, message: null });
         }
@@ -109,14 +137,23 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+app.post('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.clearCookie('user_email');
+    res.clearCookie('user_id');
+    res.redirect('/login');
+});
+
 app.get('/', (req, res) => {
-  res.render('home');
+  const useremail = req.cookies.user_email || null;
+  res.render('home', { useremail});
 });
 
 app.get('/recipe_list', async (req, res) => {
   const response = await fetch(`${API_BASE}/`);
   const recipes = await response.json();
-  res.render('recipe_list', { recipes });
+  const useremail = req.cookies.user_email || null;
+  res.render('recipe_list', { recipes, useremail });
 });
 
 app.get('/login', (req, res) => {
@@ -182,17 +219,17 @@ app.put('/:id', async (req, res) => {
   } 
 });
 
-
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
 
 app.get("/search", async (req, res) => {
     const { q } = req.query;
-    if (!q || !q.trim()) {
+    if (!q || !q.trim()) 
       return res.redirect('/recipe_list');
-    }
+
     const response = await fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`);
     const results = await response.json();
-    res.render('recipe_list', { recipes: results });
+    const useremail = req.cookies.user_email || null;
+    res.render('recipe_list', { recipes: results, useremail });
 });

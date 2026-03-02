@@ -67,6 +67,31 @@ let dal = {
             await client.close();
         }
     },
+    deleteCommentFromRecipe: async function(recipeId, commentIndex, userId) {
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("recipes");
+            const recipe =  await coll.findOne({ _id: new ObjectId(recipeId) });
+
+            if (!recipe || !recipe.comments)
+                throw new Error('Recipe not found');
+
+            const comment = recipe.comments[commentIndex];
+            if (!comment)
+                throw new Error('Comment not found');
+        if (comment.userId !== userId)
+            throw new Error('Unauthorized');
+        recipe.comments.splice(commentIndex, 1);
+        await coll.updateOne(
+            { _id: new ObjectId(recipeId) },
+            { $set: { comments: recipe.comments } 
+        });
+        } finally {
+            await client.close();
+        }
+    },
     searchRecipes: async function(query) {
         console.log("Searching recipes with query:", query);
         const client = new MongoClient(uri);

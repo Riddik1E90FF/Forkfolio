@@ -45,27 +45,39 @@
     <a href="/recipe_list">Back to Recipe List</a>
     <div id="Comments">
         <h2>Comments</h2>
-        <h3>Add a Comment</h3>
-        <form action="/recipes/<%= recipe._id %>/comments" method="POST">
-            <textarea name="comment" rows="4" cols="50" required></textarea><br>
-            Rating: <input type="number" id="rating-input" name="rating" min="0" max="5" required> / 5<br>
-            <button type="submit">Submit Comment</button>
-        </form>
+
         <% const comments = recipe.comments || []; %>
-        <% if (comments.length > 0) { %>
-            <% comments.forEach(comment => { %>
-                <div class="comment">
-                    <div class="comment-user"><strong><%= comment.username %></strong></div>
-                    <div class="comment-rating">Rating: <%= comment.rating %>/5</div>
-                    <div class="comment-text"><%= comment.text %></div>
-                    <div class="comment-time" style="font-size:0.9em; color:#555;">
-                        <%= formatTimestamp(comment.timestamp) %>
-                    </div>
-                </div>
-            <% }) %>
+        <% const alreadyCommented = userid && comments.some(c => c.userId === userid); %>
+
+        <h3>Add a Comment</h3>
+        <% if (!useremail) { %>
+            <p>Please <a href="/login">login</a> to leave a comment</p>
+        <% } else if (alreadyCommented) { %>
+            <p>You have already commented on this recipe.</p>
         <% } else { %>
-            <p>No comments yet. Be the first to comment!</p>
+            <form action="/recipes/<%= recipe._id %>/comments" method="POST">
+                <textarea name="comment" rows="4" cols="50" required></textarea><br>
+                Rating: <input type="number" id="rating-input" name="rating" min="0" max="5" required> / 5<br>
+                <button type="submit">Submit Comment</button>
+            </form>
         <% } %>
+            <% if (comments.length > 0) { %>
+                <% comments.forEach((comment, index) => { %>
+                    <div class="comment">
+                        <div class="comment-user"><strong><%= comment.username %></strong></div>
+                        <div class="comment-rating">Rating: <%= comment.rating %>/5</div>
+                        <div class="comment-text"><%= comment.text %></div>
+                        <div class="comment-time" style="font-size:0.9em; color:#555;">
+                            <%= formatTimestamp(comment.timestamp) %>
+                        </div>
+                        <% if (userid && comment.userId === userid) { %>
+                            <button onclick="deleteComment('<%= recipe._id %>', <%= index %>)">Delete</button>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No comments yet. Be the first to comment!</p>
+            <% } %>
     </div>
 
     <script>
@@ -83,6 +95,16 @@
                 });
             }
         });
+
+        async function deleteComment(recipeId, index) {
+            const res = await fetch(`/recipes/${recipeId}/comments/${index}`, {
+                method: 'DELETE'
+            });
+            if (res.ok) 
+                location.reload();
+            else
+                alert('Failed to delete comment');
+        }
     </script>
 </body>
 </html>
