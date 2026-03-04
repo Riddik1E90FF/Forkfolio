@@ -1,0 +1,19 @@
+<header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/recipe_list">Recipes</a></li>
+            <% if (useremail) { %>
+                <li><span>Logged in as <%= useremail %></span></li>
+                <li>
+                    <form action="/logout" method="POST" style="display:inline;">
+                        <button type="submit">Logout</button>
+                    </form>
+                </li>
+            <% } else { %>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/signup">Sign Up</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</header>
