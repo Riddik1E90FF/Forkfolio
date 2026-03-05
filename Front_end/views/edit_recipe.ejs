@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="/css/recipe.css">
 </head>
 <body>
+    <%- include('partials/header') %>
     <h1>Edit Submitted Recipe</h1>
-    <form action="<%= submittedRecipe ? '/edit-submitted-recipe/' + recipe._id : '/edit-recipe/' + recipe._id %>" method="POST">
+    <form action="<% if (newSubmission) { %>/submit_recipe<% } else if (submittedRecipe) { %>/edit-submitted-recipe/<%= recipe._id %><% } else { %>/edit-recipe/<%= recipe._id %><% } %>" method="POST">
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name" value="<%= recipe.name %>" required><br><br>
 
@@ -54,10 +55,12 @@
     </form>
     <% if (submittedRecipe) { %>
         <a href="/api/submitted_recipes/<%= recipe._id %>">Cancel</a>
+    <% } else if(newSubmission) {%>
+        <a href="/recipe_list">Cancel</a>
     <% } else {%>
         <a href="/api/recipes/<%= recipe._id %>">Cancel</a>
     <% } %>
-
+    <%- include('partials/footer') %>
     <script>
         function addIngredient() {
             const list = document.getElementById('ingredients-list');
@@ -68,7 +71,12 @@
             list.appendChild(div);
         }
         function removeIngredient(btn) {
-            btn.parentElement.remove();
+            const list = document.getElementById('ingredients-list');
+            if (list.children.length > 1) {
+                btn.parentElement.remove();
+            } else {
+                alert('At least one ingredient is required.');
+            }
         }
         function addDirection() {
             const list = document.getElementById('directions-list');
@@ -79,7 +87,19 @@
             list.appendChild(div);
         }
         function removeDirection(btn) {
-            btn.parentElement.remove();
+            const list = document.getElementById('directions-list');
+            if (list.children.length > 1) {
+                btn.parentElement.remove();
+            } else {
+                alert('At least one direction is required.');
+            }
+        }
+        // Ensure at least one ingredient and one direction on page load
+        window.onload = function() {
+            const ingList = document.getElementById('ingredients-list');
+            if (ingList.children.length === 0) addIngredient();
+            const dirList = document.getElementById('directions-list');
+            if (dirList.children.length === 0) addDirection();
         }
     </script>
 </body>
