@@ -22,7 +22,12 @@
                     <p><%= recipe.description %></p>
                     <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings |
                     <%= recipe.difficulty %></p>
-                    <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
+                    <p>Tags: <%- 
+                        (Array.isArray(recipe.tags) ? recipe.tags : (recipe.tags ? [recipe.tags] : []))
+                        .map(tag => `<a class="recipe_tag" href="/searchByTag/${tag}">${tag}</a>`)
+                        .join(' ') || 'None'
+                        %>
+                    </p>
                     <a href="/api/recipes/<%= recipe._id %>">View Details</a>
                     <% if (isAdmin) { %>
                         <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>

@@ -83,6 +83,12 @@ router.get("/", async (req, res) => {
     return res.json(recipes);
 });
 
+app.get("/searchByTag/:tag", async (req, res) => {
+    const { tag } = req.params;
+    const recipes = await dal.searchRecipesByTag(tag);
+    return res.json(recipes);
+});
+
 router.get("/submitted_recipes", async (req, res) => {
     const recipes = await dal.fetchAllSubmittedRecipes();
     return res.json(recipes);
@@ -215,6 +221,9 @@ router.post('/accept-submitted-recipe/:id', async (req, res) => {
 router.post('/edit-submitted-recipe/:id', async (req, res) => {
     const { id } = req.params;
     const updatedRecipe = req.body;
+    if (typeof updatedRecipe.tags === 'string') {
+        updatedRecipe.tags = updatedRecipe.tags.split(',').map(t => t.trim()).filter(Boolean);
+    }
     try {
         const success = await dal.updateSubmittedRecipe(id, updatedRecipe);
         if (success) {
@@ -230,6 +239,9 @@ router.post('/edit-submitted-recipe/:id', async (req, res) => {
 router.post('/edit-recipe/:id', async (req, res) => {
     const { id } = req.params;
     const updatedRecipe = req.body;
+    if (typeof updatedRecipe.tags === 'string') {
+        updatedRecipe.tags = updatedRecipe.tags.split(',').map(t => t.trim()).filter(Boolean);
+    }
     try {
         const success = await dal.updateRecipe(id, updatedRecipe);
         if (success) {
