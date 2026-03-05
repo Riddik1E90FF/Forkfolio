@@ -7,13 +7,18 @@
     <link rel="stylesheet" href="/css/recipe.css">
 </head>
 <body>
+    <%- include('partials/header') %>
     <h1><%= recipe.name %></h1>
     <h3>Rating: 
-        <%= (recipe.ratings && recipe.ratings.length > 0)
-            ? ((recipe.ratings.reduce((a, b) => a + b, 0) / recipe.ratings.length).toFixed(1) + ' / 5')
+        <% 
+            const comments = recipe.comments || [];
+            const ratings = comments.map(c => Number(c.rating)).filter(r => !isNaN(r));
+        %>
+        <%= (ratings.length > 0)
+            ? ((ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) + ' / 5')
             : "No ratings yet" %>
-        <% if (recipe.ratings && recipe.ratings.length > 0) { %>
-            <span style="font-size:0.8em; color:#666;">(<%= recipe.ratings.length %>)</span>
+        <% if (ratings.length > 0) { %>
+            <span style="font-size:0.8em; color:#666;">(<%= ratings.length %>)</span>
         <% } %>
     </h3>
     <p><%= recipe.description %></p>
@@ -28,8 +33,8 @@
         const year = d.getFullYear();
         return `${hours}:${minutes}${ampm} ${month}-${day}-${year}`;
     } %>
-    <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
-    <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
+    <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
+    <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
     <h2>Ingredients</h2>
     <ul>
         <% recipe.ingredients.forEach(ingredient => { %>
@@ -42,11 +47,15 @@
             <li><%= direction %></li>
         <% }) %>
     </ol>
-    <a href="/recipe_list">Back to Recipe List</a>
+    <div>
+        <% if (isAdmin) { %>
+            <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
+            <button onclick="editRecipe('<%= recipe._id %>')">Edit</button>
+        <% } %>
+    </div>
     <div id="Comments">
         <h2>Comments</h2>
 
-        <% const comments = recipe.comments || []; %>
         <% const alreadyCommented = userid && comments.some(c => c.userId === userid); %>
 
         <h3>Add a Comment</h3>
@@ -70,7 +79,7 @@
                         <div class="comment-time" style="font-size:0.9em; color:#555;">
                             <%= formatTimestamp(comment.timestamp) %>
                         </div>
-                        <% if (userid && comment.userId === userid) { %>
+                        <% if ((userid && comment.userId === userid) || isAdmin) { %>
                             <button onclick="deleteComment('<%= recipe._id %>', <%= index %>)">Delete</button>
                         <% } %>
                     </div>
@@ -79,6 +88,7 @@
                 <p>No comments yet. Be the first to comment!</p>
             <% } %>
     </div>
+    <%- include('partials/footer') %>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -97,13 +107,35 @@
         });
 
         async function deleteComment(recipeId, index) {
-            const res = await fetch(`/recipes/${recipeId}/comments/${index}`, {
-                method: 'DELETE'
-            });
-            if (res.ok) 
-                location.reload();
-            else
-                alert('Failed to delete comment');
+            if (confirm('Are you sure you want to delete this comment?')) {
+                const res = await fetch(`/recipes/${recipeId}/comments/${index}`, {
+                    method: 'DELETE'
+                });
+                if (res.ok) 
+                    location.reload();
+                else
+                    alert('Failed to delete comment');
+            }
+        }
+
+        async function deleteRecipe(id) {
+            if (confirm('Are you sure you want to delete this recipe?')) {
+                try {
+                    const response = await fetch(`/delete-recipe/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        window.location.href = '/recipe_list';
+                    } else {
+                        alert('Failed to delete recipe');
+                    }
+                } catch (error) {
+                    console.error('Error deleting recipe:', error);
+                    alert('An error occurred while deleting the recipe');
+                }
+            }
+        }
+
+        async function editRecipe(id) {
+            window.location.href = `/edit_recipe/${id}`;
         }
     </script>
 </body>

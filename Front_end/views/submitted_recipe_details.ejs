@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= recipe.name %> - Recipe Details</title>
+    <link rel="stylesheet" href="/css/recipe.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+    <h1><%= recipe.name %></h1>
+    <p><%= recipe.description %></p>
+    <% function formatTimestamp(ts) {
+        const d = new Date(ts);
+        const h24 = d.getHours();
+        const hours = ((h24 % 12) || 12);
+        const ampm = h24 >= 12 ? 'pm' : 'am';
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${hours}:${minutes}${ampm} ${month}-${day}-${year}`;
+    } %>
+    <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
+    <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
+    <h2>Ingredients</h2>
+    <ul>
+        <% recipe.ingredients.forEach(ingredient => { %>
+            <li><%= ingredient.item %>, <%= ingredient.amount %></li>
+        <% }) %>
+    </ul>
+    <h2>Instructions</h2>
+    <ol>
+        <% recipe.directions.forEach(direction => { %>
+            <li><%= direction %></li>
+        <% }) %>
+    </ol>
+    <div>
+        <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
+        <button onclick="editRecipe('<%= recipe._id %>')">Edit</button>
+        <button onclick="acceptRecipe('<%= recipe._id %>')">Accept</button>
+    </div>
+    <%- include('partials/footer') %>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('rating-input');
+            if (input) {
+                input.addEventListener('blur', () => {
+                    let v = parseFloat(input.value);
+                    if (isNaN(v)) {
+                        input.value = 0;
+                        return;
+                    }
+                    if (v < 0) input.value = 0;
+                    else if (v > 5) input.value = 5;
+                });
+            }
+        });
+
+        async function deleteRecipe(id) {
+            if (confirm('Are you sure you want to delete this recipe?')) {
+                try {
+                    const response = await fetch(`/delete-submitted-recipe/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        window.location.href = '/submitted_recipe_list';
+                    } else {
+                        alert('Failed to delete recipe');
+                    }
+                } catch (error) {
+                    console.error('Error deleting recipe:', error);
+                    alert('An error occurred while deleting the recipe');
+                }
+            }
+        }
+
+        async function editRecipe(id) {
+            window.location.href = `/edit_submitted_recipe/${id}`;
+        }
+
+        async function acceptRecipe(id) {
+            if (confirm('Are you sure you want to accept this recipe?')) {
+                try {
+                    const response = await fetch(`/accept-submitted-recipe/${id}`, { method: 'POST' });
+                    if (response.ok) {
+                        window.location.href = '/submitted_recipe_list';
+                    } else {
+                        alert('Failed to accept recipe');
+                    }
+                } catch (error) {
+                    console.error('Error accepting recipe:', error);
+                    alert('An error occurred while accepting the recipe');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

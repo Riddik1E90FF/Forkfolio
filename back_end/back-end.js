@@ -83,6 +83,11 @@ router.get("/", async (req, res) => {
     return res.json(recipes);
 });
 
+router.get("/submitted_recipes", async (req, res) => {
+    const recipes = await dal.fetchAllSubmittedRecipes();
+    return res.json(recipes);
+});
+
 router.post("/", (req, res) => {
     dal.pushRecipe(req);
     
@@ -103,6 +108,37 @@ router.delete("/", (req, res) => {
     };
     
     return res.json(response);
+});
+
+// Delete a recipe by ID
+router.delete("/delete-recipe/:id", async (req, res) => {
+    console.log("recieved delete request for recipe with id:", req.params.id);
+    const recipeId = req.params.id;
+    try {
+        const success = await dal.deleteRecipe(recipeId);
+        if (success) {
+            return res.json({ code: 200, message: "Recipe deleted" });
+        } else {
+            return res.status(404).json({ code: 404, message: "Recipe not found" });
+        }
+    } catch (error) {
+        return res.status(500).json({ code: 500, message: "Error deleting recipe" });
+    }
+});
+
+router.delete("/delete-submitted-recipe/:id", async (req, res) => {
+    console.log("recieved delete request for submitted recipe with id:", req.params.id);
+    const recipeId = req.params.id;
+    try {
+        const success = await dal.deleteSubmittedRecipe(recipeId);
+        if (success) {
+            return res.json({ code: 200, message: "Submitted recipe deleted" });
+        } else {
+            return res.status(404).json({ code: 404, message: "Submitted recipe not found" });
+        }
+    } catch (error) {
+        return res.status(500).json({ code: 500, message: "Error deleting submitted recipe" });
+    }
 });
 
 router.put("/", (req, res) => {
@@ -129,6 +165,11 @@ router.get("/search", async (req, res) => {
 
 router.get("/recipes/:id", async (req, res) => {
     const recipe = await dal.fetchRecipeById(req.params.id);
+    return res.json(recipe);
+});
+
+router.get("/submitted_recipes/:id", async (req, res) => {
+    const recipe = await dal.fetchSubmittedRecipeById(req.params.id);
     return res.json(recipe);
 });
 
@@ -167,5 +208,49 @@ router.delete("/recipes/:id/comments/:commentIndex", async (req, res) => {
     } catch (error) {
         console.error("Error deleting comment: ", error);
         res.status(500).json({ error: "Failed to delete comment" });
+    }
+});
+
+router.post('/accept-submitted-recipe/:id', async (req, res) => {
+    const {id}  = req.params;
+
+    try {
+        await dal.addRecipe(id);
+        return res.json({ code: 200, message: "Recipe accepted" });
+    } catch (error) {
+        console.error("Error adding recipe: ", error);
+        res.status(500).json({ error: "Failed to accept recipe" });
+    }
+});
+
+// Route to handle editing a submitted recipe
+router.post('/edit-submitted-recipe/:id', async (req, res) => {
+    const { id } = req.params;
+    const updatedRecipe = req.body;
+    try {
+        const success = await dal.updateSubmittedRecipe(id, updatedRecipe);
+        if (success) {
+            return res.json({ message: 'Recipe updated' });
+        } else {
+            return res.status(404).json({ error: 'Recipe not found or not updated' });
+        }
+    } catch (error) {
+        console.error('Error updating submitted recipe:', error);
+        return res.status(500).json({ error: 'Failed to update submitted recipe' });
+    }
+});
+router.post('/edit-recipe/:id', async (req, res) => {
+    const { id } = req.params;
+    const updatedRecipe = req.body;
+    try {
+        const success = await dal.updateRecipe(id, updatedRecipe);
+        if (success) {
+            return res.json({ message: 'Recipe updated' });
+        } else {
+            return res.status(404).json({ error: 'Recipe not found or not updated' });
+        }
+    } catch (error) {
+        console.error('Error updating submitted recipe:', error);
+        return res.status(500).json({ error: 'Failed to update submitted recipe' });
     }
 });

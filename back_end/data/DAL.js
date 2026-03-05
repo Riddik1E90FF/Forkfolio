@@ -24,6 +24,28 @@ let dal = {
 
         return recipes;
     },
+    fetchAllSubmittedRecipes: async function(){
+        console.log("get all submitted recipes from MongoDB");
+
+        const client = new MongoClient(uri);
+        let recipes = [];
+
+        try{
+            await client.connect();
+            console.log("Connected to MongoDB");
+            let db = client.db("recipeApp");
+            let coll = db.collection("submitted_recipes");
+            recipes = await coll.find().toArray();
+            console.log("Found " + recipes.length + " submitted recipes");
+            console.log("Submitted Recipes: ", recipes);
+        }catch(error){
+            console.error("Error fetching submitted recipes: ", error);
+        }finally{
+            await client.close();
+        }
+
+        return recipes;
+    },
         fetchRecipeById: async function(id){
         console.log("Fetching recipe with id:", id); 
         const client = new MongoClient(uri);
@@ -36,6 +58,23 @@ let dal = {
             console.log("Result:", recipe); 
         }catch(error){
             console.error("Error fetching recipe: ", error);
+        }finally{
+            await client.close();
+        }
+        return recipe;
+    },
+        fetchSubmittedRecipeById: async function(id){
+        console.log("Fetching submitted recipe with id:", id); 
+        const client = new MongoClient(uri);
+        let recipe = null;
+        try{
+            await client.connect();
+            let db = client.db("recipeApp");
+            let coll = db.collection("submitted_recipes");
+            recipe = await coll.findOne({ _id: new ObjectId(id) });
+            console.log("Result:", recipe); 
+        }catch(error){
+            console.error("Error fetching submitted recipe: ", error);
         }finally{
             await client.close();
         }
@@ -54,12 +93,11 @@ let dal = {
                 { _id: new ObjectId(id) },
                 {
                     $push: {
-                        comments: comment,
-                        ratings: Number(comment.rating)
+                        comments: comment
                     }
                 }
             );
-            console.log("Comment and rating pushed");
+            console.log("Comment pushed");
         } catch (error) {
             console.error("Error adding comment: ", error);
             throw error;
@@ -116,6 +154,99 @@ let dal = {
             await client.close();
         }
         return results;
+    },
+    addRecipe: async function(id) {
+        console.log("Adding new recipe with id:", id);
+        const client = new MongoClient(uri);
+        let recipe = await this.fetchSubmittedRecipeById(id);
+        this.deleteSubmittedRecipe(id);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("recipes");
+            const result = await coll.insertOne(recipe);
+            console.log("Insert result:", result);
+            return result.insertedId;
+        } catch (error) {
+            console.error("Error adding recipe: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
+    },
+    updateSubmittedRecipe: async function(id, updatedRecipe) {
+        console.log("Updating submitted recipe:", id, updatedRecipe);
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("submitted_recipes");
+            const result = await coll.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: updatedRecipe }
+            );
+            console.log("Update result:", result);
+            return result.modifiedCount === 1;
+        } catch (error) {
+            console.error("Error updating submitted recipe: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
+    },
+    updateRecipe: async function(id, updatedRecipe) {
+        console.log("Updating recipe:", id, updatedRecipe);
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("recipes");
+            const result = await coll.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: updatedRecipe }
+            );
+            console.log("Update result:", result);
+            return result.modifiedCount === 1;
+        } catch (error) {
+            console.error("Error updating recipe: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
+    },
+    deleteRecipe: async function(id) {
+        console.log("Deleting recipe with id:", id);
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("recipes");
+            const result = await coll.deleteOne({ _id: new ObjectId(id) });
+            console.log("Delete result:", result);
+            return result.deletedCount === 1;
+        } catch (error) {
+            console.error("Error deleting recipe: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
+    },
+    deleteSubmittedRecipe: async function(id) {
+        console.log("Deleting submitted recipe with id:", id);
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("submitted_recipes");
+            const result = await coll.deleteOne({ _id: new ObjectId(id) });
+            console.log("Delete result:", result);
+            return result.deletedCount === 1;
+        } catch (error) {
+            console.error("Error deleting submitted recipe: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
     }
 };
 
