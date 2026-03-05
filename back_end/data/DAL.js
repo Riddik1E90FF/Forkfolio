@@ -138,11 +138,12 @@ let dal = {
             await client.connect();
             const db = client.db("recipeApp");
             const coll = db.collection("recipes");
-            // Use a case-insensitive regex search on the name and ingredients fields
+            // Use a case-insensitive regex search on the name, ingredients, and tags fields
             results = await coll.find({
                 $or: [
                     { name: { $regex: query, $options: 'i' } },
-                    { 'ingredients.item': { $regex: query, $options: 'i' } }
+                    { 'ingredients.item': { $regex: query, $options: 'i' } },
+                    { tags: { $regex: query, $options: 'i' } }
                 ]
             }).toArray();
             console.log("Search results:", results);
