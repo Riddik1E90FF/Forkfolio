@@ -42,6 +42,22 @@ app.get('/api/recipes/:id', async (req, res) => {
   }
 });
 
+app.get('/api/submitted_recipes/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await fetch(`${API_BASE}/submitted_recipes/${id}`);
+    const recipe = await response.json();
+    const useremail = req.cookies.user_email || null;
+    const isAdmin = useremail && admin_emails.includes(useremail);
+    const userId = req.cookies.user_id || null;
+    const username = useremail ? useremail.split('@')[0] : 'Guest';
+    res.render('submitted_recipe_details', { recipe, useremail, userid: req.cookies.user_id || null, username, isAdmin });
+  } catch (error) {
+    console.error('Error fetching recipe details:', error);
+    res.status(500).json({ error: 'Failed to fetch recipe details' });
+  }
+});
+
 app.get('/login', (req, res) => {
     res.render('login', { error: null }); 
 });
@@ -102,6 +118,18 @@ app.delete('/delete-recipe/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting recipe:', error);
     res.status(500).send('Failed to delete recipe');
+  }
+});
+
+app.delete('/delete-submitted-recipe/:id', async (req, res) => {
+  console.log("Received delete request for submitted recipe with id:", req.params.id);
+  const { id } = req.params;
+  try {
+    const response = await fetch(`${API_BASE}/delete-submitted-recipe/${id}`, { method: 'DELETE' });
+    res.json({ message: 'Submitted recipe deleted' });
+  } catch (error) {
+    console.error('Error deleting submitted recipe:', error);
+    res.status(500).send('Failed to delete submitted recipe');
   }
 });
 
@@ -173,6 +201,14 @@ app.get('/recipe_list', async (req, res) => {
   const useremail = req.cookies.user_email || null;
   const isAdmin = useremail && admin_emails.includes(useremail);
   res.render('recipe_list', { recipes, useremail, isAdmin });
+});
+
+app.get('/submitted_recipe_list', async (req, res) => {
+  const response = await fetch(`${API_BASE}/submitted_recipes`);
+  const recipes = await response.json();
+  const useremail = req.cookies.user_email || null;
+  const isAdmin = useremail && admin_emails.includes(useremail);
+  res.render('submitted_recipe_list', { recipes, useremail, isAdmin });
 });
 
 app.get('/login', (req, res) => {

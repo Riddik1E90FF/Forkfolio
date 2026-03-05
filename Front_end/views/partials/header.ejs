@@ -5,6 +5,7 @@
             <li><a href="/recipe_list">Recipes</a></li>
             <% if (useremail) { %>
                 <% if (isAdmin) { %>
+                    <li><a href="/submitted_recipe_list">Submitted Recipes</a></li>
                     <li><span>Logged in as <%= useremail %> -- ADMIN USER</span></li>
                 <% } else { %>
                     <li><span>Logged in as <%= useremail %></span></li>

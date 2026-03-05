@@ -83,6 +83,11 @@ router.get("/", async (req, res) => {
     return res.json(recipes);
 });
 
+router.get("/submitted_recipes", async (req, res) => {
+    const recipes = await dal.fetchAllSubmittedRecipes();
+    return res.json(recipes);
+});
+
 router.post("/", (req, res) => {
     dal.pushRecipe(req);
     
@@ -121,6 +126,21 @@ router.delete("/delete-recipe/:id", async (req, res) => {
     }
 });
 
+router.delete("/delete-submitted-recipe/:id", async (req, res) => {
+    console.log("recieved delete request for submitted recipe with id:", req.params.id);
+    const recipeId = req.params.id;
+    try {
+        const success = await dal.deleteSubmittedRecipe(recipeId);
+        if (success) {
+            return res.json({ code: 200, message: "Submitted recipe deleted" });
+        } else {
+            return res.status(404).json({ code: 404, message: "Submitted recipe not found" });
+        }
+    } catch (error) {
+        return res.status(500).json({ code: 500, message: "Error deleting submitted recipe" });
+    }
+});
+
 router.put("/", (req, res) => {
     dal.modifyPost(req);
 
@@ -145,6 +165,11 @@ router.get("/search", async (req, res) => {
 
 router.get("/recipes/:id", async (req, res) => {
     const recipe = await dal.fetchRecipeById(req.params.id);
+    return res.json(recipe);
+});
+
+router.get("/submitted_recipes/:id", async (req, res) => {
+    const recipe = await dal.fetchSubmittedRecipeById(req.params.id);
     return res.json(recipe);
 });
 

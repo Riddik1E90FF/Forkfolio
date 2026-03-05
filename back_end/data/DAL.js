@@ -24,6 +24,28 @@ let dal = {
 
         return recipes;
     },
+    fetchAllSubmittedRecipes: async function(){
+        console.log("get all submitted recipes from MongoDB");
+
+        const client = new MongoClient(uri);
+        let recipes = [];
+
+        try{
+            await client.connect();
+            console.log("Connected to MongoDB");
+            let db = client.db("recipeApp");
+            let coll = db.collection("submitted_recipes");
+            recipes = await coll.find().toArray();
+            console.log("Found " + recipes.length + " submitted recipes");
+            console.log("Submitted Recipes: ", recipes);
+        }catch(error){
+            console.error("Error fetching submitted recipes: ", error);
+        }finally{
+            await client.close();
+        }
+
+        return recipes;
+    },
         fetchRecipeById: async function(id){
         console.log("Fetching recipe with id:", id); 
         const client = new MongoClient(uri);
@@ -36,6 +58,23 @@ let dal = {
             console.log("Result:", recipe); 
         }catch(error){
             console.error("Error fetching recipe: ", error);
+        }finally{
+            await client.close();
+        }
+        return recipe;
+    },
+        fetchSubmittedRecipeById: async function(id){
+        console.log("Fetching submitted recipe with id:", id); 
+        const client = new MongoClient(uri);
+        let recipe = null;
+        try{
+            await client.connect();
+            let db = client.db("recipeApp");
+            let coll = db.collection("submitted_recipes");
+            recipe = await coll.findOne({ _id: new ObjectId(id) });
+            console.log("Result:", recipe); 
+        }catch(error){
+            console.error("Error fetching submitted recipe: ", error);
         }finally{
             await client.close();
         }
@@ -58,7 +97,7 @@ let dal = {
                     }
                 }
             );
-            console.log("Comment and rating pushed");
+            console.log("Comment pushed");
         } catch (error) {
             console.error("Error adding comment: ", error);
             throw error;
@@ -133,6 +172,23 @@ let dal = {
             await client.close();
         }
     },
+    deleteSubmittedRecipe: async function(id) {
+        console.log("Deleting submitted recipe with id:", id);
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("submitted_recipes");
+            const result = await coll.deleteOne({ _id: new ObjectId(id) });
+            console.log("Delete result:", result);
+            return result.deletedCount === 1;
+        } catch (error) {
+            console.error("Error deleting submitted recipe: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
+    }
 };
 
 exports.dal = dal;
