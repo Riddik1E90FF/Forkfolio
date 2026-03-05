@@ -35,11 +35,13 @@
             <li><%= direction %></li>
         <% }) %>
     </ol>
+    <% if (isAdmin) { %>
     <div>
         <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
         <button onclick="editRecipe('<%= recipe._id %>')">Edit</button>
         <button onclick="acceptRecipe('<%= recipe._id %>')">Accept</button>
     </div>
+    <% } %>
     <%- include('partials/footer') %>
 
     <script>

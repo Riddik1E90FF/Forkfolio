@@ -105,7 +105,7 @@ let dal = {
             await client.close();
         }
     },
-    deleteCommentFromRecipe: async function(recipeId, commentIndex, userId) {
+    deleteCommentFromRecipe: async function(recipeId, commentIndex, userId, isAdmin) {
         const client = new MongoClient(uri);
         try {
             await client.connect();
@@ -119,7 +119,7 @@ let dal = {
             const comment = recipe.comments[commentIndex];
             if (!comment)
                 throw new Error('Comment not found');
-        if (comment.userId !== userId)
+        if (!isAdmin && comment.userId !== userId)
             throw new Error('Unauthorized');
         recipe.comments.splice(commentIndex, 1);
         await coll.updateOne(
@@ -155,16 +155,33 @@ let dal = {
         }
         return results;
     },
-    addRecipe: async function(id) {
-        console.log("Adding new recipe with id:", id);
+    acceptSubmittedRecipe: async function(id) {
+        console.log("Accepting submitted recipe with id:", id);
         const client = new MongoClient(uri);
         let recipe = await this.fetchSubmittedRecipeById(id);
-        this.deleteSubmittedRecipe(id);
+        await this.deleteSubmittedRecipe(id);
         try {
             await client.connect();
             const db = client.db("recipeApp");
             const coll = db.collection("recipes");
             const result = await coll.insertOne(recipe);
+            console.log("Insert result:", result);
+            return result.insertedId;
+        } catch (error) {
+            console.error("Error accepting submitted recipe: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
+    },
+    addRecipe: async function(recipeData) {
+        console.log("Adding new recipe:", recipeData);
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("recipes");
+            const result = await coll.insertOne(recipeData);
             console.log("Insert result:", result);
             return result.insertedId;
         } catch (error) {

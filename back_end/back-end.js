@@ -88,26 +88,14 @@ router.get("/submitted_recipes", async (req, res) => {
     return res.json(recipes);
 });
 
-router.post("/", (req, res) => {
-    dal.pushRecipe(req);
-    
-    const response = {
-        code: 200,
-        message: "Recipe added",
-    };
-    
-    return res.json(response);
-});
-
-router.delete("/", (req, res) => { 
-    dal.deleteRecipe(req);
-
-    const response = {
-        code: 200,
-        message: "Recipe deleted",
-    };
-    
-    return res.json(response);
+router.post("/", async (req, res) => {
+    try {
+        await dal.addRecipe(req.body);
+        return res.json({ code: 200, message: "Recipe added" });
+    } catch (error) {
+        console.error("Error adding recipe: ", error);
+        return res.status(500).json({ error: "Failed to add recipe" });
+    }
 });
 
 // Delete a recipe by ID
@@ -201,9 +189,9 @@ router.post("/recipes/:id/comments", async (req, res) => {
 
 router.delete("/recipes/:id/comments/:commentIndex", async (req, res) => {
     const { id, commentIndex } = req.params;
-    const { userId } = req.body;
+    const { userId, isAdmin } = req.body;
     try {
-        await dal.deleteCommentFromRecipe(id, parseInt(commentIndex), userId);
+        await dal.deleteCommentFromRecipe(id, parseInt(commentIndex), userId, isAdmin);
         return res.json({ code: 200, message: "Comment deleted" });
     } catch (error) {
         console.error("Error deleting comment: ", error);
@@ -215,7 +203,7 @@ router.post('/accept-submitted-recipe/:id', async (req, res) => {
     const {id}  = req.params;
 
     try {
-        await dal.addRecipe(id);
+        await dal.acceptSubmittedRecipe(id);
         return res.json({ code: 200, message: "Recipe accepted" });
     } catch (error) {
         console.error("Error adding recipe: ", error);

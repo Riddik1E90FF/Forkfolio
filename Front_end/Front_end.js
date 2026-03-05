@@ -18,7 +18,7 @@ const API_BASE = 'http://localhost:4000';
 
 app.get('/api/recipes', async (req, res) => {
   try {
-    const response = await fetch(`${API_BASE}/recipes`);
+    const response = await fetch(`${API_BASE}/`);
     const data = await response.json();
     res.json(data);
   } catch (error) {
@@ -91,7 +91,7 @@ app.get('/edit_recipe/:id', async (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', { error: null }); 
+    res.render('login', { error: null, message: null });
 });
 
 app.get('/signup', (req, res) => {
@@ -121,13 +121,13 @@ app.post('/recipes/:id/comments', async (req, res) => {
   }
 });
 
-app.delete('/recipes/:id/comments/:commentIdex', async (req, res) => {
-  const { id, commentIdex } = req.params;
+app.delete('/recipes/:id/comments/:commentIndex', async (req, res) => {
+  const { id, commentIndex } = req.params;
   const userId = req.cookies.user_id || null;
   const useremail = req.cookies.user_email || null;
   const isAdmin = useremail && admin_emails.includes(useremail);
   try {
-    const response = await fetch(`${API_BASE}/recipes/${id}/comments/${commentIdex}`, {
+    const response = await fetch(`${API_BASE}/recipes/${id}/comments/${commentIndex}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, isAdmin }),
@@ -243,9 +243,6 @@ app.get('/submitted_recipe_list', async (req, res) => {
   res.render('submitted_recipe_list', { recipes, useremail, isAdmin });
 });
 
-app.get('/login', (req, res) => {
-    res.render('login', { error: null, message: null }); 
-});
 
 app.post('/', async (req, res) => {
   const { name, ingredients, directions } = req.body;
