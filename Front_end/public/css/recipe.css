@@ -67,11 +67,11 @@ ul {
 
 /* Recipe card styling */
 .recipe {
-    border: 1px solid #ccc;
+    border: 1px solid #ccc !important;
     padding: 15px;
     margin-bottom: 20px;
-    border-radius: 8px;
-    background-color: #fafafa;
+    border-radius: 8px !important;
+    background-color: #fafafa !important;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -90,6 +90,28 @@ ul {
     margin-right: 10px;
 }
 
+a.recipe_tag {
+    display: inline-block;
+    color: #333 !important;
+    text-decoration: none !important;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background-color: #e8e8e8 !important;
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid #aaa !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: background-color 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+a.recipe_tag:hover {
+    background-color: #1e1e1e !important;
+    color: #fff !important;
+    border-color: #1e1e1e !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
 /* Forms */
 form label {
     display: block;
@@ -303,21 +325,4 @@ footer a:hover {
 
 .signup-container a:hover {
     text-decoration: underline;
-}
-
-.error {
-    color: #ff3b3b;
-    margin-bottom: 15px;
-    font-weight: bold;
-}
-
-.success {
-    color: green;
-    font-weight: bold;
-    text-align: center;
-    margin: 20px 0;
-    padding: 10px;
-    border: 2px solid green;
-    border-radius: 5px;
-    background-color: #e0ffe0;
 }

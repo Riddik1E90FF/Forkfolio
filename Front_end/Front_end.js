@@ -243,6 +243,14 @@ app.get('/submitted_recipe_list', async (req, res) => {
   res.render('submitted_recipe_list', { recipes, useremail, isAdmin });
 });
 
+app.get("/searchByTag/:tag", async (req, res) => {
+  const { tag } = req.params;
+  const response = await fetch(`${API_BASE}/searchByTag/${tag}`);
+  const recipes = await response.json();
+  const useremail = req.cookies.user_email || null;
+  const isAdmin = useremail && admin_emails.includes(useremail);
+  res.render('recipe_list', { recipes, useremail, isAdmin });
+});
 
 app.post('/', async (req, res) => {
   const { name, ingredients, directions } = req.body;
