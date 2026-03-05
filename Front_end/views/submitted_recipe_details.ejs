@@ -21,8 +21,8 @@
         const year = d.getFullYear();
         return `${hours}:${minutes}${ampm} ${month}-${day}-${year}`;
     } %>
-    <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
-    <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
+    <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
+    <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
     <h2>Ingredients</h2>
     <ul>
         <% recipe.ingredients.forEach(ingredient => { %>
@@ -35,7 +35,11 @@
             <li><%= direction %></li>
         <% }) %>
     </ol>
-    <a href="/submitted_recipe_list">Back to Submitted Recipe List</a>
+    <div>
+        <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
+        <button onclick="editRecipe('<%= recipe._id %>')">Edit</button>
+        <button onclick="acceptRecipe('<%= recipe._id %>')">Accept</button>
+    </div>
     <%- include('partials/footer') %>
 
     <script>
@@ -53,6 +57,42 @@
                 });
             }
         });
+
+        async function deleteRecipe(id) {
+            if (confirm('Are you sure you want to delete this recipe?')) {
+                try {
+                    const response = await fetch(`/delete-submitted-recipe/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        window.location.href = '/submitted_recipe_list';
+                    } else {
+                        alert('Failed to delete recipe');
+                    }
+                } catch (error) {
+                    console.error('Error deleting recipe:', error);
+                    alert('An error occurred while deleting the recipe');
+                }
+            }
+        }
+
+        async function editRecipe(id) {
+            window.location.href = `/edit_submitted_recipe/${id}`;
+        }
+
+        async function acceptRecipe(id) {
+            if (confirm('Are you sure you want to accept this recipe?')) {
+                try {
+                    const response = await fetch(`/accept-submitted-recipe/${id}`, { method: 'POST' });
+                    if (response.ok) {
+                        window.location.href = '/submitted_recipe_list';
+                    } else {
+                        alert('Failed to accept recipe');
+                    }
+                } catch (error) {
+                    console.error('Error accepting recipe:', error);
+                    alert('An error occurred while accepting the recipe');
+                }
+            }
+        }
     </script>
 </body>
 </html>

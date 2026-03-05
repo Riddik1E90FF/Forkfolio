@@ -58,6 +58,38 @@ app.get('/api/submitted_recipes/:id', async (req, res) => {
   }
 });
 
+app.get('/edit_submitted_recipe/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await fetch(`${API_BASE}/submitted_recipes/${id}`);
+    const recipe = await response.json();
+    const useremail = req.cookies.user_email || null;
+    const isAdmin = useremail && admin_emails.includes(useremail);
+    const userId = req.cookies.user_id || null;
+    const username = useremail ? useremail.split('@')[0] : 'Guest';
+    res.render('edit_recipe', { recipe, useremail, userid: req.cookies.user_id || null, username, isAdmin, submittedRecipe: true });
+  } catch (error) {
+    console.error('Error fetching recipe details:', error);
+    res.status(500).json({ error: 'Failed to fetch recipe details' });
+  }
+});
+
+app.get('/edit_recipe/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await fetch(`${API_BASE}/recipes/${id}`);
+    const recipe = await response.json();
+    const useremail = req.cookies.user_email || null;
+    const isAdmin = useremail && admin_emails.includes(useremail);
+    const userId = req.cookies.user_id || null;
+    const username = useremail ? useremail.split('@')[0] : 'Guest';
+    res.render('edit_recipe', { recipe, useremail, userid: req.cookies.user_id || null, username, isAdmin, submittedRecipe: false });
+  } catch (error) {
+    console.error('Error fetching recipe details:', error);
+    res.status(500).json({ error: 'Failed to fetch recipe details' });
+  }
+});
+
 app.get('/login', (req, res) => {
     res.render('login', { error: null }); 
 });
@@ -242,7 +274,7 @@ app.put('/:id', async (req, res) => {
     const response = await fetch(`${API_BASE}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, ingredients, directions }),
+      body: JSON.stringify({ name, ingredients, directions })
     });
     if (response.ok) {
       res.json({ message: 'Recipe updated successfully' });
@@ -270,4 +302,67 @@ app.get("/search", async (req, res) => {
     const useremail = req.cookies.user_email || null;
     const isAdmin = useremail && admin_emails.includes(useremail);
     res.render('recipe_list', { recipes: results, useremail, isAdmin });
+});
+
+// Route to accept a submitted recipe by ID
+app.post('/accept-submitted-recipe/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await fetch(`http://localhost:4000/accept-submitted-recipe/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (response.ok) {
+      res.redirect('/submitted_recipe_list');
+    } else {
+      const error = await response.text();
+      res.status(500).send('Failed to accept recipe: ' + error);
+    }
+  } catch (error) {
+    console.error('Error accepting submitted recipe:', error);
+    res.status(500).send('Failed to accept recipe');
+  }
+});
+
+// Route to handle editing a submitted recipe
+app.post('/edit-submitted-recipe/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedRecipe = req.body;
+  try {
+    const response = await fetch(`http://localhost:4000/edit-submitted-recipe/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedRecipe),
+    });
+    if (response.ok) {
+      res.redirect('/api/submitted_recipes/' + id);
+    } else {
+      const error = await response.text();
+      res.status(500).send('Failed to update recipe: ' + error);
+    }
+  } catch (error) {
+    console.error('Error updating submitted recipe:', error);
+    res.status(500).send('Failed to update recipe');
+  }
+});
+
+app.post('/edit-recipe/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedRecipe = req.body;
+  try {
+    const response = await fetch(`http://localhost:4000/edit-recipe/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedRecipe),
+    });
+    if (response.ok) {
+      res.redirect('/api/recipes/' + id);
+    } else {
+      const error = await response.text();
+      res.status(500).send('Failed to update recipe: ' + error);
+    }
+  } catch (error) {
+    console.error('Error updating submitted recipe:', error);
+    res.status(500).send('Failed to update recipe');
+  }
 });

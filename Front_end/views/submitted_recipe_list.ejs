@@ -10,19 +10,23 @@
         <%- include('partials/header') %>
         <section>
             <h1>Submitted Recipe List</h1>
-            <% recipes.forEach(recipe => { %>
-                <div class="recipe">
-                    <h2><%= recipe.name %></h2>
-                    <p><%= recipe.description %></p>
-                    <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings |
-                    <%= recipe.difficulty %></p>
-                    <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
-                    <a href="/api/submitted_recipes/<%= recipe._id %>">View Details</a>
-                    <% if (isAdmin) { %>
-                        <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
-                    <% } %>
-                </div>
-            <% }) %>
+            <% if (recipes.length === 0) { %>
+                <p>No submitted recipes</p>
+            <% } else { %>
+                <% recipes.forEach(recipe => { %>
+                    <div class="recipe">
+                        <h2><%= recipe.name %></h2>
+                        <p><%= recipe.description %></p>
+                        <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings |
+                        <%= recipe.difficulty %></p>
+                        <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
+                        <a href="/api/submitted_recipes/<%= recipe._id %>">View Details</a>
+                        <% if (isAdmin) { %>
+                            <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } %>
 
         </section>
 

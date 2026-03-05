@@ -20,9 +20,9 @@
                 <div class="recipe">
                     <h2><%= recipe.name %></h2>
                     <p><%= recipe.description %></p>
-                    <p><%= recipe.estimated_time %> | <%= recipe.servings %> servings |
+                    <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings |
                     <%= recipe.difficulty %></p>
-                    <p>Tags: <%= recipe.tags ? recipe.tags.join(', ') : 'None' %></p>
+                    <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
                     <a href="/api/recipes/<%= recipe._id %>">View Details</a>
                     <% if (isAdmin) { %>
                         <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>

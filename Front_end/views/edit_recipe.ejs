@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Submitted Recipe</title>
+    <link rel="stylesheet" href="/css/recipe.css">
+</head>
+<body>
+    <h1>Edit Submitted Recipe</h1>
+    <form action="<%= submittedRecipe ? '/edit-submitted-recipe/' + recipe._id : '/edit-recipe/' + recipe._id %>" method="POST">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" value="<%= recipe.name %>" required><br><br>
+
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" rows="3" required><%= recipe.description %></textarea><br><br>
+
+        <label for="estimatedTime">Estimated Time:</label><br>
+        <input type="text" id="estimatedTime" name="estimatedTime" value="<%= recipe.estimatedTime %>" required><br><br>
+
+        <label for="servings">Servings:</label><br>
+        <input type="number" id="servings" name="servings" value="<%= recipe.servings %>" required><br><br>
+
+        <label for="difficulty">Difficulty:</label><br>
+        <input type="text" id="difficulty" name="difficulty" value="<%= recipe.difficulty %>" required><br><br>
+
+        <label for="tags">Tags (comma separated):</label><br>
+        <input type="text" id="tags" name="tags" value="<%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : '') %>"><br><br>
+
+        <label>Ingredients:</label><br>
+        <div id="ingredients-list">
+            <% recipe.ingredients.forEach(function(ingredient, idx) { %>
+                <div class="ingredient-item">
+                    <input type="text" name="ingredients[<%= idx %>][item]" value="<%= ingredient.item %>" required>
+                    <input type="text" name="ingredients[<%= idx %>][amount]" value="<%= ingredient.amount %>" required>
+                    <button type="button" onclick="removeIngredient(this)">Remove</button>
+                </div>
+            <% }); %>
+        </div>
+        <button type="button" onclick="addIngredient()">Add Ingredient</button><br><br>
+
+        <label>Directions:</label><br>
+        <div id="directions-list">
+            <% recipe.directions.forEach(function(direction, idx) { %>
+                <div class="direction-item">
+                    <input type="text" name="directions[<%= idx %>]" value="<%= direction %>" required>
+                    <button type="button" onclick="removeDirection(this)">Remove</button>
+                </div>
+            <% }); %>
+        </div>
+        <button type="button" onclick="addDirection()">Add Direction</button><br><br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+    <% if (submittedRecipe) { %>
+        <a href="/api/submitted_recipes/<%= recipe._id %>">Cancel</a>
+    <% } else {%>
+        <a href="/api/recipes/<%= recipe._id %>">Cancel</a>
+    <% } %>
+
+    <script>
+        function addIngredient() {
+            const list = document.getElementById('ingredients-list');
+            const idx = list.children.length;
+            const div = document.createElement('div');
+            div.className = 'ingredient-item';
+            div.innerHTML = `<input type="text" name="ingredients[${idx}][item]" required> <input type="text" name="ingredients[${idx}][amount]" required> <button type="button" onclick="removeIngredient(this)">Remove</button>`;
+            list.appendChild(div);
+        }
+        function removeIngredient(btn) {
+            btn.parentElement.remove();
+        }
+        function addDirection() {
+            const list = document.getElementById('directions-list');
+            const idx = list.children.length;
+            const div = document.createElement('div');
+            div.className = 'direction-item';
+            div.innerHTML = `<input type="text" name="directions[${idx}]" required> <button type="button" onclick="removeDirection(this)">Remove</button>`;
+            list.appendChild(div);
+        }
+        function removeDirection(btn) {
+            btn.parentElement.remove();
+        }
+    </script>
+</body>
+</html>
