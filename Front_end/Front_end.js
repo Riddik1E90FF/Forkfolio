@@ -1,3 +1,5 @@
+const admin_emails = ["zachmajernik@gmail.com"];
+
 const express = require('express');
 const cookieparser = require('cookie-parser');
 
@@ -30,9 +32,10 @@ app.get('/api/recipes/:id', async (req, res) => {
     const response = await fetch(`${API_BASE}/recipes/${id}`);
     const recipe = await response.json();
     const useremail = req.cookies.user_email || null;
+    const isAdmin = useremail && admin_emails.includes(useremail);
     const userId = req.cookies.user_id || null;
     const username = useremail ? useremail.split('@')[0] : 'Guest';
-    res.render('recipe_details', { recipe, useremail, userid: req.cookies.user_id || null, username });
+    res.render('recipe_details', { recipe, useremail, userid: req.cookies.user_id || null, username, isAdmin });
   } catch (error) {
     console.error('Error fetching recipe details:', error);
     res.status(500).json({ error: 'Failed to fetch recipe details' });
@@ -73,11 +76,13 @@ app.post('/recipes/:id/comments', async (req, res) => {
 app.delete('/recipes/:id/comments/:commentIdex', async (req, res) => {
   const { id, commentIdex } = req.params;
   const userId = req.cookies.user_id || null;
+  const useremail = req.cookies.user_email || null;
+  const isAdmin = useremail && admin_emails.includes(useremail);
   try {
     const response = await fetch(`${API_BASE}/recipes/${id}/comments/${commentIdex}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ userId, isAdmin }),
     });
 
       res.json({ message: 'Comment deleted'});
@@ -85,6 +90,18 @@ app.delete('/recipes/:id/comments/:commentIdex', async (req, res) => {
   } catch (error) {
     console.error('Error deleting comment:', error);
     res.status(500).json({ error: 'Failed to delete comment' });
+  }
+});
+
+app.delete('/delete-recipe/:id', async (req, res) => {
+  console.log("Received delete request for recipe with id:", req.params.id);
+  const { id } = req.params;
+  try {
+    const response = await fetch(`${API_BASE}/delete-recipe/${id}`, { method: 'DELETE' });
+    res.json({ message: 'Recipe deleted' });
+  } catch (error) {
+    console.error('Error deleting recipe:', error);
+    res.status(500).send('Failed to delete recipe');
   }
 });
 
@@ -146,14 +163,16 @@ app.post('/logout', (req, res) => {
 
 app.get('/', (req, res) => {
   const useremail = req.cookies.user_email || null;
-  res.render('home', { useremail});
+  const isAdmin = useremail && admin_emails.includes(useremail);
+  res.render('home', { useremail, isAdmin });
 });
 
 app.get('/recipe_list', async (req, res) => {
   const response = await fetch(`${API_BASE}/`);
   const recipes = await response.json();
   const useremail = req.cookies.user_email || null;
-  res.render('recipe_list', { recipes, useremail });
+  const isAdmin = useremail && admin_emails.includes(useremail);
+  res.render('recipe_list', { recipes, useremail, isAdmin });
 });
 
 app.get('/login', (req, res) => {
@@ -177,24 +196,6 @@ app.post('/', async (req, res) => {
   } catch (error) {
     console.error('Error adding recipe:', error);
     res.status(500).send('Failed to add recipe');
-  }
-});
-
-app.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const response = await fetch(`${API_BASE}/${id}`, {
-      method: 'DELETE',
-    });
-    if (response.ok) {
-      res.json({ message: 'Recipe deleted successfully' });
-    } else {
-      console.error('Error deleting recipe:', response.statusText);
-      res.status(500).json({ error: 'Failed to delete recipe' });
-    }
-  } catch (error) {
-    console.error('Error deleting recipe:', error);
-    res.status(500).json({ error: 'Failed to delete recipe' });
   }
 });
 
@@ -231,5 +232,6 @@ app.get("/search", async (req, res) => {
     const response = await fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`);
     const results = await response.json();
     const useremail = req.cookies.user_email || null;
-    res.render('recipe_list', { recipes: results, useremail });
+    const isAdmin = useremail && admin_emails.includes(useremail);
+    res.render('recipe_list', { recipes: results, useremail, isAdmin });
 });

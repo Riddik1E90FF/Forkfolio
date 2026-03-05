@@ -4,7 +4,11 @@
             <li><a href="/">Home</a></li>
             <li><a href="/recipe_list">Recipes</a></li>
             <% if (useremail) { %>
-                <li><span>Logged in as <%= useremail %></span></li>
+                <% if (isAdmin) { %>
+                    <li><span>Logged in as <%= useremail %> -- ADMIN USER</span></li>
+                <% } else { %>
+                    <li><span>Logged in as <%= useremail %></span></li>
+                <% } %>
                 <li>
                     <form action="/logout" method="POST" style="display:inline;">
                         <button type="submit">Logout</button>

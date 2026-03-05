@@ -54,8 +54,7 @@ let dal = {
                 { _id: new ObjectId(id) },
                 {
                     $push: {
-                        comments: comment,
-                        ratings: Number(comment.rating)
+                        comments: comment
                     }
                 }
             );
@@ -116,7 +115,24 @@ let dal = {
             await client.close();
         }
         return results;
-    }
+    },
+    deleteRecipe: async function(id) {
+        console.log("Deleting recipe with id:", id);
+        const client = new MongoClient(uri);
+        try {
+            await client.connect();
+            const db = client.db("recipeApp");
+            const coll = db.collection("recipes");
+            const result = await coll.deleteOne({ _id: new ObjectId(id) });
+            console.log("Delete result:", result);
+            return result.deletedCount === 1;
+        } catch (error) {
+            console.error("Error deleting recipe: ", error);
+            throw error;
+        } finally {
+            await client.close();
+        }
+    },
 };
 
 exports.dal = dal;

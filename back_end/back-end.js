@@ -105,6 +105,22 @@ router.delete("/", (req, res) => {
     return res.json(response);
 });
 
+// Delete a recipe by ID
+router.delete("/delete-recipe/:id", async (req, res) => {
+    console.log("recieved delete request for recipe with id:", req.params.id);
+    const recipeId = req.params.id;
+    try {
+        const success = await dal.deleteRecipe(recipeId);
+        if (success) {
+            return res.json({ code: 200, message: "Recipe deleted" });
+        } else {
+            return res.status(404).json({ code: 404, message: "Recipe not found" });
+        }
+    } catch (error) {
+        return res.status(500).json({ code: 500, message: "Error deleting recipe" });
+    }
+});
+
 router.put("/", (req, res) => {
     dal.modifyPost(req);
 
