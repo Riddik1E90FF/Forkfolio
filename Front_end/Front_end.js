@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 const admin_emails = ["zachmajernik@gmail.com", "ahryguy@gmail.com"];
-=======
-const admin_emails = ["zachmajernik@gmail.com"];
 const recipe_schema_blueprint = {
   "name": "",
   "description": "",
@@ -20,8 +17,6 @@ const recipe_schema_blueprint = {
   },
   "comments": []
 };
->>>>>>> 38924f833cb2cebd92bd16214e1aac64e9d85564
-
 const express = require('express');
 const cookieparser = require('cookie-parser');
 
