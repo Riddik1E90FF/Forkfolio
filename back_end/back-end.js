@@ -250,7 +250,18 @@ router.post('/edit-recipe/:id', async (req, res) => {
             return res.status(404).json({ error: 'Recipe not found or not updated' });
         }
     } catch (error) {
-        console.error('Error updating submitted recipe:', error);
-        return res.status(500).json({ error: 'Failed to update submitted recipe' });
+        console.error('Error updating recipe:', error);
+        return res.status(500).json({ error: 'Failed to update recipe' });
+    }
+});
+
+router.post('/submit-recipe', async (req, res) => {
+    const recipe = req.body;
+    try {        
+        await dal.addRecipe(recipe, true);
+        return res.json({ message: 'Recipe submitted' });
+    } catch (error) {
+        console.error('Error submitting recipe:', error);
+        return res.status(500).json({ error: 'Failed to submit recipe' });
     }
 });

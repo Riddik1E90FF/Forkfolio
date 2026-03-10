@@ -161,35 +161,41 @@ let dal = {
         const client = new MongoClient(uri);
         let recipe = await this.fetchSubmittedRecipeById(id);
         await this.deleteSubmittedRecipe(id);
-        try {
-            await client.connect();
-            const db = client.db("recipeApp");
-            const coll = db.collection("recipes");
-            const result = await coll.insertOne(recipe);
-            console.log("Insert result:", result);
-            return result.insertedId;
-        } catch (error) {
-            console.error("Error accepting submitted recipe: ", error);
-            throw error;
-        } finally {
-            await client.close();
-        }
+        this.addRecipe(recipe, false);
     },
-    addRecipe: async function(recipeData) {
-        console.log("Adding new recipe:", recipeData);
-        const client = new MongoClient(uri);
-        try {
-            await client.connect();
-            const db = client.db("recipeApp");
-            const coll = db.collection("recipes");
-            const result = await coll.insertOne(recipeData);
-            console.log("Insert result:", result);
-            return result.insertedId;
-        } catch (error) {
-            console.error("Error adding recipe: ", error);
-            throw error;
-        } finally {
-            await client.close();
+    addRecipe: async function(recipeData, addToSubmitted) {
+        if (addToSubmitted) {
+            console.log("Adding new submitted recipe:", recipeData);
+            const client = new MongoClient(uri);
+            try {
+                await client.connect();
+                const db = client.db("recipeApp");
+                const coll = db.collection("submitted_recipes");
+                const result = await coll.insertOne(recipeData);
+                console.log("Insert result:", result);
+                return result.insertedId;
+            } catch (error) {
+                console.error("Error adding submitted recipe: ", error);
+                throw error;
+            } finally {
+                await client.close();
+            }
+        }else{
+            console.log("Adding new recipe:", recipeData);
+            const client = new MongoClient(uri);
+            try {
+                await client.connect();
+                const db = client.db("recipeApp");
+                const coll = db.collection("recipes");
+                const result = await coll.insertOne(recipeData);
+                console.log("Insert result:", result);
+                return result.insertedId;
+            } catch (error) {
+                console.error("Error adding recipe: ", error);
+                throw error;
+            } finally {
+                await client.close();
+            }
         }
     },
     updateSubmittedRecipe: async function(id, updatedRecipe) {
@@ -204,7 +210,7 @@ let dal = {
                 { $set: updatedRecipe }
             );
             console.log("Update result:", result);
-            return result.modifiedCount === 1;
+            return result.matchedCount === 1;
         } catch (error) {
             console.error("Error updating submitted recipe: ", error);
             throw error;
@@ -224,7 +230,7 @@ let dal = {
                 { $set: updatedRecipe }
             );
             console.log("Update result:", result);
-            return result.modifiedCount === 1;
+            return result.matchedCount === 1;
         } catch (error) {
             console.error("Error updating recipe: ", error);
             throw error;

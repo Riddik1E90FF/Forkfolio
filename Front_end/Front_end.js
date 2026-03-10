@@ -1,4 +1,26 @@
+<<<<<<< HEAD
 const admin_emails = ["zachmajernik@gmail.com", "ahryguy@gmail.com"];
+=======
+const admin_emails = ["zachmajernik@gmail.com"];
+const recipe_schema_blueprint = {
+  "name": "",
+  "description": "",
+  "estimatedTime": "",
+  "servings": "",
+  "ingredients": [],
+  "directions": [],
+  "difficulty": "",
+  "tags": [],
+  "author": {
+    "username": "",
+    "userId": ""
+  },
+  "createdAt": {
+    "$date": ""
+  },
+  "comments": []
+};
+>>>>>>> 38924f833cb2cebd92bd16214e1aac64e9d85564
 
 const express = require('express');
 const cookieparser = require('cookie-parser');
@@ -67,7 +89,7 @@ app.get('/edit_submitted_recipe/:id', async (req, res) => {
     const isAdmin = useremail && admin_emails.includes(useremail);
     const userId = req.cookies.user_id || null;
     const username = useremail ? useremail.split('@')[0] : 'Guest';
-    res.render('edit_recipe', { recipe, useremail, userid: req.cookies.user_id || null, username, isAdmin, submittedRecipe: true });
+    res.render('edit_recipe', { recipe, useremail, userid: req.cookies.user_id || null, username, isAdmin, submittedRecipe: true, newSubmission: false  });
   } catch (error) {
     console.error('Error fetching recipe details:', error);
     res.status(500).json({ error: 'Failed to fetch recipe details' });
@@ -83,11 +105,19 @@ app.get('/edit_recipe/:id', async (req, res) => {
     const isAdmin = useremail && admin_emails.includes(useremail);
     const userId = req.cookies.user_id || null;
     const username = useremail ? useremail.split('@')[0] : 'Guest';
-    res.render('edit_recipe', { recipe, useremail, userid: req.cookies.user_id || null, username, isAdmin, submittedRecipe: false });
+    res.render('edit_recipe', { recipe, useremail, userid: req.cookies.user_id || null, username, isAdmin, submittedRecipe: false, newSubmission: false  });
   } catch (error) {
     console.error('Error fetching recipe details:', error);
     res.status(500).json({ error: 'Failed to fetch recipe details' });
   }
+});
+
+app.get('/submit_recipe', async (req, res) => {
+  const useremail = req.cookies.user_email || null;
+  const isAdmin = useremail && admin_emails.includes(useremail);
+  const userId = req.cookies.user_id || null;
+  const username = useremail ? useremail.split('@')[0] : 'Guest';
+  res.render('edit_recipe', { recipe: recipe_schema_blueprint, useremail, userid: userId, username, isAdmin, submittedRecipe: false, newSubmission: true });
 });
 
 app.get('/login', (req, res) => {
@@ -353,9 +383,10 @@ app.post('/edit-submitted-recipe/:id', async (req, res) => {
 
 app.post('/edit-recipe/:id', async (req, res) => {
   const { id } = req.params;
+  console.log("Received edit request for recipe with id:", id);
   const updatedRecipe = req.body;
   try {
-    const response = await fetch(`http://localhost:4000/edit-recipe/${id}`, {
+    const response = await fetch(`${API_BASE}/edit-recipe/${id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedRecipe),
@@ -369,5 +400,28 @@ app.post('/edit-recipe/:id', async (req, res) => {
   } catch (error) {
     console.error('Error updating submitted recipe:', error);
     res.status(500).send('Failed to update recipe');
+  }
+});
+
+app.post('/submit_recipe', async (req, res) => {
+  const recipe = req.body;
+  // Attach useremail and userid from cookies (same method as username)
+  recipe.useremail = req.cookies.user_email || null;
+  recipe.userid = req.cookies.user_id || null;
+  try {
+    const response = await fetch(`${API_BASE}/submit-recipe`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(recipe),
+    });
+    if (response.ok) {
+      res.redirect('/recipe_list');
+    } else {
+      const error = await response.text();
+      res.status(500).send('Failed to submit recipe: ' + error);
+    }
+  } catch (error) {
+    console.error('Error submitting recipe:', error);
+    res.status(500).send('Failed to submit recipe');
   }
 });
