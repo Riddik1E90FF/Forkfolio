@@ -1,4 +1,4 @@
-const admin_emails = ["zachmajernik@gmail.com"];
+const admin_emails = ["zachmajernik@gmail.com", "ahryguy@gmail.com"];
 
 const express = require('express');
 const cookieparser = require('cookie-parser');
