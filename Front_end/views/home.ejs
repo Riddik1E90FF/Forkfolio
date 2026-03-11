@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Forkfolio | Home</title>
     <link rel="stylesheet" href="/css/recipe.css">
 </head>
 <body>
@@ -11,64 +11,63 @@
 
     <% if (useremail) { %>
         <div class="welcome-message">
-            <p>Welcome, <span class = "welcome-name"><%= useremail.split('@')[0] %></span>!</p>
-            <a href = "/recipe_list">View Recipes</a>
+            <p>Welcome, <span class="welcome-name"><%= useremail.split('@')[0] %></span>!</p>
+            <a href="/recipe_list" class="btn-primary">View Recipes</a>
         </div>
-        <% } %>
+    <% } %>
 
-        <section class="hero">
-            <div class="hero-left">
-                <p class="eyebrow">Your personal recipe collection</p>
-                <h1 class="hero-title">Cook more.<br><em>Remember</em> everything.</h1>
-                <p class="hero-sub">
-                    Forkfolio is a simple place to save, browse, and share the recipes that matter to you - no clutter, no ads, just food.
-                </p>
-                <div class="hero-cta">
-                    <a href="/recipe_list" class="btn-primary">Browse Recipes</a>
-                    <% if (!useremail) { %>
-                        <a href="/signup" class="btn-secondary">Create Account</a>
-                    <% } %>
+    <section class="hero">
+        <div class="hero-left">
+            <p class="eyebrow">Your personal recipe collection</p>
+            <h1 class="hero-title">Cook more.<br><em>Remember</em> everything.</h1>
+            <p class="hero-sub">
+                Forkfolio is a simple place to save, browse, and share recipes that matter to you — no clutter, no ads, just food.
+            </p>
+            <div class="hero-cta">
+                <a href="/recipe_list" class="btn-primary">Browse Recipes</a>
+                <% if (!useremail) { %>
+                    <a href="/signup" class="btn-secondary">Create Account</a>
+                <% } %>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="stat-grid">
+                <div class="stat-cell">
+                    <div class="stat-label">Recipes to explore</div>
+                </div>
+                <div class="stat-cell">
+                    <div class="stat-label">NO Ads</div>
+                </div>
+                <div class="stat-cell">
+                    <div class="stat-label">Community ratings</div>
+                </div>
+                <div class="stat-cell">
+                    <div class="stat-label">Place for your food</div>
                 </div>
             </div>
-            <div class="hero-right">
-                <div class="stat-grid">
-                    <div class="stat-cell">
-                        <div class="stat-label">Recipes to explore</div>
-                    </div>
-                    <div class="stat-cell">
-                        <div class="stat-label">NO Ads</div>
-                    </div>
-                    <div class="stat-cell">
-                        <div class="stat-label">Community ratings</div>
-                    </div>
-                    <div class="stat-cell">
-                        <div class="stat-label">Place for your food</div>
-                    </div>
-                </div>
-            </div>
+        </div>
     </section>
 
-        
-        <section class = "how-section">
-            <div class = "section-header">
-                <h2>How to Use Our Recipe Sharing Platform</h2>
-                <h2 class = "section-title">How it works</h2>
+    <section class="how-section">
+        <div class="section-header">
+            <h2 class="section-title">How it Works</h2>
+        </div>
+        <div class="steps">
+            <div class="step-card">
+                <h3 class="step-title">1. Create an Account</h3>
+                <p class="step-description">Sign up for a free account to start sharing your favorite recipes with the world.</p>
             </div>
-            <div class = "steps">
-                <div class = "step-num">
-                    <h3 class = "step-title">1. Create an Account</h3>
-                    <p class = "step-description">Sign up for a free account to start sharing your favorite recipes with the world.</p>
-                </div>
-                <div class = "step-num">
-                    <h3 class = "step-title">2. Browse Recipes</h3>
-                    <p class = "step-description">Explore a wide variety of recipes shared by our community, including ingredients, instructions, and photos.</p>
-                </div>
-                <div class = "step-num">
-                    <h3 class = "step-title">3. Rate and Comment</h3>
-                    <p class = "step-description">Discover new recipes from other users, leave comments, and connect with fellow food enthusiasts.</p>
-                </div>
+            <div class="step-card">
+                <h3 class="step-title">2. Browse Recipes</h3>
+                <p class="step-description">Explore a wide variety of recipes shared by our community, including ingredients, instructions, and photos.</p>
             </div>
-        </section>
+            <div class="step-card">
+                <h3 class="step-title">3. Rate and Comment</h3>
+                <p class="step-description">Discover new recipes from other users, leave comments, and connect with fellow food enthusiasts.</p>
+            </div>
+        </div>
+    </section>
+
     <%- include('partials/footer') %>
 </body>
 </html>
