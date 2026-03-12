@@ -30,9 +30,6 @@
                         %>
                     </p>
                     <a href="/api/recipes/<%= recipe._id %>">View Details</a>
-                    <% if (isAdmin) { %>
-                        <button class="btn-delete" onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
-                    <% } %>
                 </div>
                 </div>
             <% }) %>
