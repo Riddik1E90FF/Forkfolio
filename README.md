@@ -7,3 +7,7 @@ A web application that allows users to look through a catalog of recipes that th
 - Run `npm i` in both folders to install the node modules.
 - Run `npm start` in both folders to start the server.
 - Go to your Front_end terminal and `CTRL + CLICK` the link, or go to your web browser and visit `http://localhost:7000`
+
+# Team documentation
+- Trello Board: https://trello.com/b/G9QdRCee/forkfolio-weekly-tasks
+- Github Repository: https://github.com/Riddik1E90FF/Forkfolio 
