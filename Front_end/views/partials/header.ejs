@@ -11,9 +11,9 @@
                 <% } else { %>
                     <li><span>Logged in as <%= useremail %></span></li>
                 <% } %>
-                <li>
+                <li class="nav-logout-li">
                     <form action="/logout" method="POST" style="display:inline;">
-                        <button type="submit">Logout</button>
+                        <button type="submit" class="nav-logout-btn">Logout</button>
                     </form>
                 </li>
             <% } else { %>

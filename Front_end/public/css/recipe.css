@@ -20,13 +20,21 @@ header {
 header nav ul {
     list-style: none;
     display: flex;
+    align-items: center;
     gap: 30px;
+    width: 100%;
+}
+
+.nav-logout-li {
+    margin-left: auto;
 }
 
 header nav ul li a {
     color: #fff;
     text-decoration: none;
     font-weight: 600;
+    display: inline;
+    margin-top: 0;
 }
 
 header nav ul li a:hover {
@@ -208,7 +216,8 @@ form h1 {
     color: #7a3e2b;
 }
 
-label {
+label,
+.field-group-label {
     font-weight: 600;
     display: block;
     margin-bottom: 8px;
@@ -217,6 +226,9 @@ label {
 
 input[type="text"],
 input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
 textarea {
     width: 100%;
     padding: 10px;
@@ -229,6 +241,9 @@ textarea {
 
 input[type="text"]:focus,
 input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
 textarea:focus {
     border-color: #f4a261;
     box-shadow: 0 0 8px rgba(244,162,97,0.4);
@@ -446,4 +461,285 @@ a:hover {
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* ── Nav overrides ─────────────────────────────────────── */
+/* Reset block form styles when the form lives inside the nav */
+header nav ul li form {
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    max-width: none;
+    border-radius: 0;
+    display: inline;
+}
+
+/* Logout button looks like a nav link.
+   Uses button.nav-logout-btn (specificity 0,1,1) to beat button[type="submit"] (also 0,1,1)
+   — same specificity means declaration order wins, and this appears later in the file. */
+button.nav-logout-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    display: inline;
+    margin: 0;
+    box-shadow: none;
+    transition: opacity 0.2s;
+}
+
+button.nav-logout-btn:hover {
+    opacity: 0.8;
+    background: none;
+}
+
+/* ── Search bar ────────────────────────────────────────── */
+.search-bar {
+    max-width: 1000px;
+    margin: 30px auto 0;
+    padding: 0 20px;
+}
+
+.search-bar form {
+    display: flex;
+    gap: 10px;
+    max-width: none;
+    margin: 0;
+    padding: 15px 20px;
+    background-color: #fff3e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.search-bar input[type="search"] {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.search-bar button {
+    background-color: #e76f51;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.search-bar button:hover {
+    background-color: #d65a3c;
+}
+
+/* ── Recipe block title ────────────────────────────────── */
+.recipe-block h1 {
+    color: #7a3e2b;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f4a261;
+}
+
+/* ── Recipe details page container ────────────────────── */
+.recipe-details-block {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #fff3e6;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.recipe-details-block h1 {
+    color: #7a3e2b;
+    margin-bottom: 8px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f4a261;
+}
+
+.recipe-details-block h2 {
+    color: #e76f51;
+    margin: 22px 0 10px;
+}
+
+.recipe-details-block h3 {
+    color: #7a3e2b;
+    margin: 16px 0 8px;
+}
+
+.recipe-details-block > p {
+    margin-bottom: 10px;
+    color: #3b3b3b;
+}
+
+.recipe-details-block ul,
+.recipe-details-block ol {
+    padding-left: 25px;
+    margin-bottom: 15px;
+}
+
+.recipe-details-block li {
+    margin-bottom: 6px;
+}
+
+/* ── Admin action buttons ──────────────────────────────── */
+.admin-actions {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.btn-delete {
+    background-color: #e76f51;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: #d65a3c;
+}
+
+.btn-edit {
+    background-color: #f4a261;
+    color: #3d1a08;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #e8944d;
+}
+
+.btn-accept {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.btn-accept:hover {
+    background-color: #388e3c;
+}
+
+/* ── Comments ──────────────────────────────────────────── */
+#Comments {
+    margin-top: 30px;
+}
+
+.comment {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.comment-user {
+    color: #7a3e2b;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.comment-rating {
+    color: #e76f51;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+
+.comment-text {
+    color: #3b3b3b;
+    margin-bottom: 6px;
+}
+
+.comment-time {
+    font-size: 0.85em;
+    color: #888;
+}
+
+/* ── Error / success messages ──────────────────────────── */
+.error {
+    color: #c0392b;
+    background-color: #fde8e4;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.success {
+    color: #1a6e3c;
+    background-color: #d4edda;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* ── Recipe tag pills ──────────────────────────────────── */
+.recipe_tag {
+    display: inline-block;
+    background-color: #f4a261;
+    color: #3d1a08;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    margin: 2px;
+    margin-top: 0;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.recipe_tag:hover {
+    background-color: #b34a2e;
+    color: #fff;
+}
+
+/* ── Submitted recipes admin banner ────────────────────── */
+.admin-banner {
+    background: linear-gradient(90deg, #7a3e2b, #e76f51);
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* ── Responsive additions ──────────────────────────────── */
+@media (max-width: 600px) {
+    .search-bar form {
+        flex-direction: column;
+    }
+
+    .admin-actions {
+        flex-direction: column;
+    }
+
+    .recipe-details-block {
+        margin: 20px 15px;
+        padding: 20px;
+    }
 }

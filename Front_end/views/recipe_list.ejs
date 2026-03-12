@@ -14,12 +14,12 @@
                     <button>Search</button>
             </form>
         </section>
-        <div class="recipe-block"
+        <div class="recipe-block">
             <h1>Recipe List</h1>
             <% recipes.forEach(recipe => { %>
                 <div class="recipe">
                     <h2><%= recipe.name %></h2>
-                    <div class="recipe-info"
+                    <div class="recipe-info">
                     <p><%= recipe.description %></p>
                     <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings |
                     <%= recipe.difficulty %></p>
@@ -31,7 +31,7 @@
                     </p>
                     <a href="/api/recipes/<%= recipe._id %>">View Details</a>
                     <% if (isAdmin) { %>
-                        <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
+                        <button class="btn-delete" onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
                     <% } %>
                 </div>
                 </div>

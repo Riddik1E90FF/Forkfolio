@@ -3,63 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= recipe.name %> - Recipe Details</title>
+    <title><%= recipe.name %> - Submitted Recipe</title>
     <link rel="stylesheet" href="/css/recipe.css">
 </head>
 <body>
     <%- include('partials/header') %>
-    <h1><%= recipe.name %></h1>
-    <p><%= recipe.description %></p>
-    <% function formatTimestamp(ts) {
-        const d = new Date(ts);
-        const h24 = d.getHours();
-        const hours = ((h24 % 12) || 12);
-        const ampm = h24 >= 12 ? 'pm' : 'am';
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const year = d.getFullYear();
-        return `${hours}:${minutes}${ampm} ${month}-${day}-${year}`;
-    } %>
-    <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
-    <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
-    <h2>Ingredients</h2>
-    <ul>
-        <% recipe.ingredients.forEach(ingredient => { %>
-            <li><%= ingredient.item %>, <%= ingredient.amount %></li>
-        <% }) %>
-    </ul>
-    <h2>Instructions</h2>
-    <ol>
-        <% recipe.directions.forEach(direction => { %>
-            <li><%= direction %></li>
-        <% }) %>
-    </ol>
-    <% if (isAdmin) { %>
-    <div>
-        <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
-        <button onclick="editRecipe('<%= recipe._id %>')">Edit</button>
-        <button onclick="acceptRecipe('<%= recipe._id %>')">Accept</button>
+    <div class="admin-banner">Admin View — Submitted Recipe (Pending Approval)</div>
+    <div class="recipe-details-block">
+        <h1><%= recipe.name %></h1>
+        <% function formatTimestamp(ts) {
+            const d = new Date(ts);
+            const h24 = d.getHours();
+            const hours = ((h24 % 12) || 12);
+            const ampm = h24 >= 12 ? 'pm' : 'am';
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${hours}:${minutes}${ampm} ${month}-${day}-${year}`;
+        } %>
+        <p><%= recipe.description %></p>
+        <p><%= recipe.estimatedTime %> | <%= recipe.servings %> servings | <%= recipe.difficulty %></p>
+        <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
+
+        <h2>Ingredients</h2>
+        <ul>
+            <% recipe.ingredients.forEach(ingredient => { %>
+                <li><%= ingredient.item %>, <%= ingredient.amount %></li>
+            <% }) %>
+        </ul>
+
+        <h2>Instructions</h2>
+        <ol>
+            <% recipe.directions.forEach(direction => { %>
+                <li><%= direction %></li>
+            <% }) %>
+        </ol>
+
+        <% if (isAdmin) { %>
+            <div class="admin-actions">
+                <button class="btn-delete" onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
+                <button class="btn-edit" onclick="editRecipe('<%= recipe._id %>')">Edit</button>
+                <button class="btn-accept" onclick="acceptRecipe('<%= recipe._id %>')">Accept</button>
+            </div>
+        <% } %>
     </div>
-    <% } %>
     <%- include('partials/footer') %>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const input = document.getElementById('rating-input');
-            if (input) {
-                input.addEventListener('blur', () => {
-                    let v = parseFloat(input.value);
-                    if (isNaN(v)) {
-                        input.value = 0;
-                        return;
-                    }
-                    if (v < 0) input.value = 0;
-                    else if (v > 5) input.value = 5;
-                });
-            }
-        });
-
         async function deleteRecipe(id) {
             if (confirm('Are you sure you want to delete this recipe?')) {
                 try {

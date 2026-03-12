@@ -8,8 +8,8 @@
 </head>
 <body>
     <%- include('partials/header') %>
-    <h1>Edit Submitted Recipe</h1>
     <form action="<% if (newSubmission) { %>/submit_recipe<% } else if (submittedRecipe) { %>/edit-submitted-recipe/<%= recipe._id %><% } else { %>/edit-recipe/<%= recipe._id %><% } %>" method="POST">
+        <h1><% if (newSubmission) { %>Submit a Recipe<% } else { %>Edit Recipe<% } %></h1>
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name" value="<%= recipe.name %>" required><br><br>
 
@@ -28,7 +28,7 @@
         <label for="tags">Tags (comma separated):</label><br>
         <input type="text" id="tags" name="tags" value="<%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : '') %>"><br><br>
 
-        <label>Ingredients:</label><br>
+        <span class="field-group-label">Ingredients:</span><br>
         <div id="ingredients-list">
             <% recipe.ingredients.forEach(function(ingredient, idx) { %>
                 <div class="ingredient-item">
@@ -40,7 +40,7 @@
         </div>
         <button type="button" onclick="addIngredient()">Add Ingredient</button><br><br>
 
-        <label>Directions:</label><br>
+        <span class="field-group-label">Directions:</span><br>
         <div id="directions-list">
             <% recipe.directions.forEach(function(direction, idx) { %>
                 <div class="direction-item">

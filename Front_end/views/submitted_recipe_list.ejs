@@ -8,7 +8,7 @@
     </head>
     <body>
         <%- include('partials/header') %>
-        <section>
+        <section class="recipe-block">
             <h1>Submitted Recipe List</h1>
             <% if (recipes.length === 0) { %>
                 <p>No submitted recipes</p>
@@ -22,7 +22,7 @@
                         <p>Tags: <%= Array.isArray(recipe.tags) ? recipe.tags.join(', ') : (recipe.tags ? recipe.tags : 'None') %></p>
                         <a href="/api/submitted_recipes/<%= recipe._id %>">View Details</a>
                         <% if (isAdmin) { %>
-                            <button onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
+                            <button class="btn-delete" onclick="deleteRecipe('<%= recipe._id %>')">Delete</button>
                         <% } %>
                     </div>
                 <% }) %>
